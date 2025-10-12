@@ -13,6 +13,26 @@ jobs:
       contents: read
     env:
       DJANGO_SECRET_KEY: ${{ secrets.DJANGO_SECRET_KEY }}
+      POSTGRES_DB: test_db
+      POSTGRES_USER: test_user
+      POSTGRES_PASSWORD: test_password
+      DJANGO_DATABASE_HOST: localhost
+      DJANGO_DATABASE_PORT: 5432
+      PGUSER: test_user
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     steps:
       - name: Checkout code
         uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # Consigliato: usa @<SHA> per sicurezza
