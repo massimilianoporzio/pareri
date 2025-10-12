@@ -19,6 +19,7 @@ jobs:
       DJANGO_DATABASE_HOST: localhost
       DJANGO_DATABASE_PORT: 5432
       PGUSER: test_user
+      DOMAIN_NAME: "localhost"
     services:
       postgres:
         image: postgres:15
