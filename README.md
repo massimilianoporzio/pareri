@@ -19,10 +19,19 @@ You will need:
 
 When developing locally, we use:
 
-- [`editorconfig`](http://editorconfig.org/) plugin (**required**)
-- [`poetry`](https://github.com/python-poetry/poetry) (**required**)
-- [`pyenv`](https://github.com/pyenv/pyenv)
+## pnpm & Dependabot best practice
 
-## Documentation
+Per aggiornamenti automatici delle dipendenze JS/TS (es. Prettier) con Dependabot:
 
-Full documentation is available here: [`docs/`](docs).
+- Usa sempre pnpm locale (non globale) per gestire le dipendenze del progetto.
+- Assicurati che `package.json` e `pnpm-lock.yaml` siano presenti nella root.
+- Installa le dipendenze con `pnpm add --save-dev <package>`.
+- Dependabot rileverà e aggiornerà automaticamente le dipendenze tramite il lockfile.
+
+Esempio:
+
+```sh
+pnpm add --save-dev prettier
+```
+
+Questo garantisce aggiornamenti automatici e riproducibilità delle dipendenze JS/TS.
