@@ -1,3 +1,6 @@
+"""MAIN FILE FOR DJANGO MANAGEMENT COMMANDS."""
+
+# pylint: disable=import-outside-toplevel
 import os
 import sys
 
