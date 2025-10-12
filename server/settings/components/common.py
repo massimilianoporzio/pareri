@@ -22,6 +22,7 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 INSTALLED_APPS: tuple[str, ...] = (
     # Your apps go here:
     'server.apps.main',
+    'server.apps.accounts',
     # Default django apps:
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -60,6 +61,8 @@ MIDDLEWARE: tuple[str, ...] = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     # Axes:
     'axes.middleware.AxesMiddleware',
+    # CRUM - Current Request User Middleware:
+    'crum.CurrentRequestUserMiddleware',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -163,6 +166,10 @@ AUTHENTICATION_BACKENDS = (
     'axes.backends.AxesBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
+
+# Use the project's custom user model defined in accounts app
+# AUTH_USER_MODEL must be 'app_label.ModelName' not a dotted module path
+AUTH_USER_MODEL = 'accounts.CustomUser'
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',

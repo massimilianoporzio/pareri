@@ -258,3 +258,6 @@ artifacts/
 
 # safety:
 .safety/
+
+# virtual environments:
+.venv/

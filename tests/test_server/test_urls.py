@@ -1,3 +1,5 @@
+"""Tests for server URLs."""
+
 from http import HTTPStatus
 
 import pytest

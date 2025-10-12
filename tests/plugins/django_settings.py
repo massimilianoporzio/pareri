@@ -1,3 +1,5 @@
+"""Pytest fixtures to configure Django settings for tests."""
+
 import pytest
 from django.conf import LazySettings
 

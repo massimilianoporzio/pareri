@@ -1,0 +1,19 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll": "explicit",
+    "source.fixAll.ruff": "explicit"
+  },
+  "[python]": {
+    "editor.defaultFormatter": "charliermarsh.ruff",
+    "editor.formatOnSave": true
+  },
+  "python.testing.pytestArgs": ["tests"],
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestEnabled": true
+  // Opzionale: punta l'eseguibile ruff del venv (sostituisci il path)
+  //"ruff.executablePath": "C:\\path\\to\\your\\venv\\Scripts\\ruff.exe",
+  // Assicurati che VS Code usi l'interprete del venv (opzionale)
+  //"python.defaultInterpreterPath": "C:\\path\\to\\your\\venv\\Scripts\\python.exe"
+}
