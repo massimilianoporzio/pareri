@@ -1,0 +1,7 @@
+http://192.168.1.18/pareri {
+    reverse_proxy localhost:8000
+    handle_path /static/* {
+        root * E:/produzione/pareri/static
+        file_server
+    }
+}

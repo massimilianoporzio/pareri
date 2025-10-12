@@ -116,12 +116,15 @@ TIME_ZONE = 'UTC'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
+STATIC_URL = '/pareri/static/'
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 )
+
+# Directory dove Django raccoglie tutti i file statici delle app
+STATIC_ROOT = BASE_DIR.joinpath('server', 'staticfiles')
 
 
 # Templates
@@ -195,6 +198,12 @@ SECURE_REFERRER_POLICY = 'same-origin'
 # https://github.com/adamchainz/django-permissions-policy#setting
 PERMISSIONS_POLICY: dict[str, str | list[str]] = {}
 
+# CSRF trusted origins (usa DOMAIN_NAME dal file .env)
+
+
+CSRF_TRUSTED_ORIGINS = [
+    f'http://{config("DOMAIN_NAME")}',
+]
 
 # Timeouts
 # https://docs.djangoproject.com/en/5.2/ref/settings/#std:setting-EMAIL_TIMEOUT

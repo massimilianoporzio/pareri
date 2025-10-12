@@ -16,29 +16,25 @@ def test_health_check(client: Client) -> None:
 
 def test_admin_unauthorized(client: Client) -> None:
     """Ensures that admin panel requires auth."""
-    response = client.get('/admin/')
-
+    response = client.get('/pareri/')
     assert response.status_code == HTTPStatus.FOUND
 
 
 def test_admin_authorized(admin_client: Client) -> None:
     """Ensures that admin panel is accessible."""
-    response = admin_client.get('/admin/')
-
+    response = admin_client.get('/pareri/')
     assert response.status_code == HTTPStatus.OK
 
 
 def test_admin_docs_unauthorized(client: Client) -> None:
     """Ensures that admin panel docs requires auth."""
-    response = client.get('/admin/doc/')
-
+    response = client.get('/pareri/doc/')
     assert response.status_code == HTTPStatus.FOUND
 
 
 def test_admin_docs_authorized(admin_client: Client) -> None:
     """Ensures that admin panel docs are accessible."""
-    response = admin_client.get('/admin/doc/')
-
+    response = admin_client.get('/pareri/doc/')
     assert response.status_code == HTTPStatus.OK
     assert b'docutils' not in response.content
 

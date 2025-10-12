@@ -1,0 +1,5 @@
+[run]
+omit =
+    server/staticfiles/*
+    server/media/*
+    server/apps/*/migrations/*

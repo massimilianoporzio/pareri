@@ -1,13 +1,8 @@
-# Justfile — common developer tasks for this project
-# Requires: just (https://github.com/casey/just). On Windows install via scoop/choco/winget.
 
-# Use PowerShell on Windows to keep command quoting predictable
 set shell := ["powershell", "-c"]
 
-# Default target
 default := "menu"
 
-# Menu: pretty command list with sections and emoji
 menu:
     @Write-Host "📦  Project commands" -ForegroundColor White
     @Write-Host "────────────────────────────" -ForegroundColor DarkGray
@@ -17,6 +12,7 @@ menu:
     @Write-Host "  ▶ migrate         — Apply migrations (just migrate)" -ForegroundColor Gray
     @Write-Host "  ▶ makemigrations  — Create migrations (just makemigrations)" -ForegroundColor Gray
     @Write-Host "  ▶ createsuperuser — Create admin user interactively (just createsuperuser)" -ForegroundColor Gray
+    @Write-Host "  ▶ collectstatic   — Collect static files (just collectstatic)" -ForegroundColor Gray
     @Write-Host ""
     @Write-Host "🗄️ Database" -ForegroundColor Yellow
     @Write-Host "  ▶ (use your local Postgres; see config/.env.template)" -ForegroundColor Gray
@@ -34,6 +30,7 @@ menu:
     @Write-Host "  ▶ lint   — Run ruff linter (just lint)" -ForegroundColor Gray
     @Write-Host "  ▶ mypy   — Run static type checks (just mypy)" -ForegroundColor Gray
     @Write-Host "  ▶ format — Autoformat with ruff (just format)" -ForegroundColor Gray
+    @Write-Host "  ▶ prettier-md — Format Markdown in root/docs (just prettier-md)" -ForegroundColor Gray
     @Write-Host ""
     @Write-Host "📚 Docs" -ForegroundColor Blue
     @Write-Host "  ▶ docs — Build Sphinx docs (just docs)" -ForegroundColor Gray
@@ -112,3 +109,10 @@ pre-commit-all:
 
 mypy ARGS='':
     @poetry run mypy server tests {{ARGS}}
+
+prettier-md:
+    @pnpm prettier  --write $(Get-ChildItem -Path . -Filter *.md -File | % { $_.FullName }; Get-ChildItem -Path ./docs -Filter *.md -File -Recurse | % { $_.FullName })
+
+# Collect static files for Django
+collectstatic:
+    @poetry run python manage.py collectstatic --noinput

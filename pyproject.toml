@@ -36,6 +36,8 @@ structlog = "^25.4"
 wheel = "^0.45"
 django-crum = "^0.7.9"
 django-concurrency = "^2.7"
+uvicorn = "^0.37.0"
+python-dotenv = "^1.1.1"
 
 
 [tool.poetry.group.dev.dependencies]

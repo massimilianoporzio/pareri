@@ -4,6 +4,7 @@ This file contains all the settings used in production.
 This file is required and if development.py is present these
 values are overridden.
 """
+# pylint: disable=fixme
 
 from server.settings.components import config
 
@@ -67,11 +68,11 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = False  # on intranet we don't need it
 SECURE_REDIRECT_EXEMPT = [
     # This is required for healthcheck to work:
     '^health/',
 ]
 
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = False  # on intranet we don't need it
+CSRF_COOKIE_SECURE = False  # on intranet we don't need it
