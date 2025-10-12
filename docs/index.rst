@@ -93,6 +93,12 @@ There are multiple processes that you need to get familiar with:
    pages/template/faq.rst
    pages/template/troubleshooting.rst
 
+.. toctree::
+   :maxdepth: 2
+   :caption: Pareri
+
+   pareri/modules
+
 
 Indexes and tables
 ==================

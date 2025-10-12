@@ -74,7 +74,7 @@ db-psql DBNAME:
     & $psql -U ${PGUSER:-postgres} -h ${PG_HOST:-localhost} -p ${PG_PORT:-5432} ${DBNAME}
 
 run:
-    @poetry run python manage.py runserver 127.0.0.1:8000
+    @poetry run python manage.py runserver 127.0.0.1:8001
 
 migrate:
     @poetry run python manage.py migrate --noinput

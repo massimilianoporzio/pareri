@@ -1,3 +1,4 @@
+# pylint: disable=missing-module-docstring,invalid-name
 # wemake-django-template documentation build configuration file, created by
 # sphinx-quickstart on Sat Sep 30 12:42:34 2017.
 #
@@ -65,12 +66,19 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
+    'sphinx.ext.intersphinx',
     # https://github.com/executablebooks/MyST-Parser
     'myst_parser',
     # 3rd party, order matters:
     # https://github.com/wemake-services/wemake-django-template/issues/159
     'sphinx_autodoc_typehints',
 ]
+
+# -- Intersphinx configuration ------------------------------------------------
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'django': ('https://docs.djangoproject.com/en/stable/', None),
+}
 
 # If true, Sphinx will warn about all references
 # where the target cannot be found. Default is `False``.
