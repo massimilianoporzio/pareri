@@ -882,6 +882,21 @@ lint = ["ruff (==0.11.13)"]
 test = ["boto3", "celery", "django-storages", "pytest", "pytest-cov", "pytest-django", "redis"]
 
 [[package]]
+name = "django-jazzmin"
+version = "2.6.2"
+description = "Drop-in theme for django admin, that utilises AdminLTE 3 & Bootstrap 4 to make yo' admin look jazzy"
+optional = false
+python-versions = ">=3.7"
+groups = ["main"]
+files = [
+    {file = "django_jazzmin-2.6.2-py3-none-any.whl", hash = "sha256:f7eb509b8a2e92260c2e836dc856fc9ca8888e572094201f9021d7b620bb96b2"},
+    {file = "django_jazzmin-2.6.2.tar.gz", hash = "sha256:2bfc33c4e6d59ee647930402d372692ae3514ea45940040eb7f50b481f6ef53b"},
+]
+
+[package.dependencies]
+django = ">=3"
+
+[[package]]
 name = "django-migration-linter"
 version = "5.2.0"
 description = "Detect backward incompatible migrations for your django project"
@@ -3505,4 +3520,4 @@ dev = ["doc8", "flake8", "flake8-import-order", "rstcheck[sphinx]", "sphinx"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<3.13"
-content-hash = "7933246f0f0f8dcb1e4ad2638b603ce1be85e5835948a42b17eca938367fb6c8"
+content-hash = "8af154e7ee995a35f15a54454c5f9441af801e8817bb05923d1058575fb45864"

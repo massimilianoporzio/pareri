@@ -38,6 +38,7 @@ django-crum = "^0.7.9"
 django-concurrency = "^2.7"
 uvicorn = "^0.37.0"
 python-dotenv = "^1.1.1"
+django-jazzmin = "^2.6.0"
 
 
 [tool.poetry.group.dev.dependencies]

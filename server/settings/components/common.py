@@ -19,29 +19,38 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # Application definition:
 
-INSTALLED_APPS: tuple[str, ...] = (
-    # Your apps go here:
+
+# --- Project apps ---
+PROJECT_APPS: tuple[str, ...] = (
     'server.apps.main',
     'server.apps.accounts',
     'server.common',
-    # Default django apps:
+    'server.common.django',
+)
+
+# --- Third-party apps ---
+THIRD_PARTY_APPS: tuple[str, ...] = (
+    'axes',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
+    'jazzmin',
+)
+
+# --- Django core apps ---
+DJANGO_CORE_APPS: tuple[str, ...] = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # django-admin:
     'django.contrib.admin',
     'django.contrib.admindocs',
-    # Security:
-    'axes',
-    # Health checks:
-    # You may want to enable other checks as well,
-    # see: https://github.com/KristianOellegaard/django-health-check
-    'health_check',
-    'health_check.db',
-    'health_check.cache',
-    'health_check.storage',
+)
+
+INSTALLED_APPS: tuple[str, ...] = (
+    PROJECT_APPS + THIRD_PARTY_APPS + DJANGO_CORE_APPS
 )
 
 MIDDLEWARE: tuple[str, ...] = (
@@ -210,3 +219,7 @@ CSRF_TRUSTED_ORIGINS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#std:setting-EMAIL_TIMEOUT
 
 EMAIL_TIMEOUT = 5
+
+FULL_ACCESS_GROUP_NAME = config(
+    'FULL_ACCESS_GROUP_NAME', default='Full Access Admin'
+)
