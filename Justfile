@@ -116,3 +116,6 @@ prettier-md:
 # Collect static files for Django
 collectstatic:
     @poetry run python manage.py collectstatic --noinput
+
+generate-django-secret:
+     @poetry run python -c "from django.utils.crypto import get_random_string; print(get_random_string(50))"
