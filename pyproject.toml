@@ -60,7 +60,7 @@ django-coverage-plugin = "^3.1"
 pytest-randomly = "^4.0"
 pytest-timeout = "^2.3"
 django-test-migrations = "^1.5"
-hypothesis = "^6.123"
+hypothesis = "^6.140"
 
 django-stubs = { version = ">=5.2,<5.3", extras = ["compatible-mypy"] }
 
