@@ -53,6 +53,85 @@ INSTALLED_APPS: tuple[str, ...] = (
     PROJECT_APPS + THIRD_PARTY_APPS + DJANGO_CORE_APPS
 )
 
+JAZZMIN_SETTINGS = {
+    # css per cambiare qualche elemento
+    'custom_css': 'css/admin.css',
+    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    'site_title': 'Pratiche & Pareri',
+    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    'site_header': 'Pratiche & Pareri',
+    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    'site_brand': 'Pratiche & Pareri',
+    # Logo to use for your site, must be present in static files, used for brand on top left
+    'site_logo': 'images/icon.png',
+    # Logo to use for your site, must be present in static files, used for login form logo (defaults to site_logo)
+    'login_logo': 'images/logo2.png',
+    # Logo to use for login form in dark themes (defaults to login_logo)
+    'login_logo_dark': 'images/logo2.png',
+    # CSS classes that are applied to the logo above
+    'site_logo_classes': 'img-circle  bg-transparent',
+    # Welcome text on the login screen
+    'welcome_sign': 'Benvenuti su Pratiche&Pareri',
+    # Copyright on the footer
+    'copyright': 'Massimiliano Porzio',
+    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
+    'use_google_fonts_cdn': True,
+    # Whether to show the UI customizer on the sidebar
+    'show_ui_builder': True,
+    # abilita traduzione in jazzmin
+    'i18n_enabled': True,
+    # icons for apps:
+    'icons': {
+        'cities_light.cityProxy': 'fas fa-city',
+        'cities_light.countryProxy': 'fas fa-earth-europe',
+        'cities_light.regionProxy': 'fas fa-map-marker-alt',
+        'pareri.tipoOrigine': 'fas fa-building-columns',
+        'pareri.espertoRadioprotezione': 'fas fa-radiation',
+        'pareri.tipoPratica': 'fas fa-file-invoice',
+        'pareri.tipoProcesso': 'fas fa-gear',
+        'accounts.customuser': 'fas fa-user',
+        'auth.Group': 'fas fa-users',
+        'datoriLavoro.sede': 'fas fa-location-dot',
+        'datoriLavoro.datoreLavoro': 'fas fa-user-tie',
+    },
+    # "usermenu_links": [
+    #     {"name": "Logout", "url": "/admin/logout/", "icon": "fas fa-power-off"},
+    # ],
+    # Aggiungi questa linea per disabilitare il link di logout predefinito
+    'show_logout': False,
+}
+JAZZMIN_UI_TWEAKS = {
+    'navbar_small_text': False,
+    'footer_small_text': False,
+    'body_small_text': False,
+    'brand_small_text': False,
+    'brand_colour': 'navbar-pink',
+    'navbar': 'navbar-white navbar-light',
+    'no_navbar_border': False,
+    'navbar_fixed': False,
+    'layout_boxed': False,
+    'footer_fixed': False,
+    'sidebar_fixed': False,
+    'sidebar': 'sidebar-dark-maroon',
+    'sidebar_nav_small_text': False,
+    'sidebar_disable_expand': False,
+    'sidebar_nav_child_indent': False,
+    'sidebar_nav_compact_style': False,
+    'sidebar_nav_legacy_style': False,
+    'sidebar_nav_flat_style': False,
+    'theme': 'default',
+    'dark_mode_theme': None,
+    'button_classes': {
+        'primary': 'btn-primary',
+        'secondary': 'btn-secondary',
+        'info': 'btn-info',
+        'warning': 'btn-warning',
+        'danger': 'btn-danger',
+        'success': 'btn-success',
+    },
+}
+
+
 MIDDLEWARE: tuple[str, ...] = (
     # Logging:
     'server.settings.components.logging.LoggingContextVarsMiddleware',
@@ -127,7 +206,7 @@ TIME_ZONE = 'UTC'
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/pareri/static/'
-
+STATICFILES_DIRS = [BASE_DIR / 'server' / 'static']
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',

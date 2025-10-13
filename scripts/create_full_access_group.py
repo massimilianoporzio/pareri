@@ -1,16 +1,23 @@
+"""
+Script per creare un gruppo di accesso completo.
+
+Crea un gruppo di accesso completo
+ in Django se non esiste già.
+"""
+
 import os
 import sys
 from pathlib import Path
 
+import django
+from django.conf import settings
+from django.contrib.auth.models import Group
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
-import django
 
 django.setup()
-
-from django.conf import settings
-from django.contrib.auth.models import Group
 
 
 def main():
