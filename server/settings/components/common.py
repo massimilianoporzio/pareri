@@ -57,7 +57,7 @@ INSTALLED_APPS: tuple[str, ...] = (
 )
 
 TAILWIND_APP_NAME = 'server.apps.theme'
-NPM_BIN_PATH = config('NPM_BIN_PATH')
+NPM_BIN_PATH = config('NPM_BIN_PATH', default='/usr/bin/npm')
 
 JAZZMIN_SETTINGS = {
     # css per cambiare qualche elemento
