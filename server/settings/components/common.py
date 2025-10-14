@@ -49,7 +49,6 @@ DJANGO_CORE_APPS: tuple[str, ...] = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'django.contrib.admindocs',
 )
 
 INSTALLED_APPS: tuple[str, ...] = (

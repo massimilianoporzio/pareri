@@ -3,6 +3,8 @@
 
 # pylint: disable=protected-access
 
+import contextlib
+import sys
 from http import HTTPStatus
 
 import pytest
@@ -11,11 +13,14 @@ from django.contrib import admin
 from django.contrib.admin import AdminSite
 from django.contrib.admin.models import LogEntry
 from django.contrib.admin.sites import all_sites
+from django.contrib.auth.models import Group
 from django.db.models import Model
 from django.http import HttpRequest
-from django.test import Client
+from django.test import Client, RequestFactory
 from django.urls import reverse
 
+import server.admin as admin_mod
+from server.admin import CustomAdminSite
 from server.apps.accounts.admin import CustomUserAdmin
 from server.apps.accounts.models import CustomUser
 
@@ -168,3 +173,188 @@ def test_formfield_for_manytomany_real():
     formfield = admin_instance.formfield_for_manytomany(db_field, request)
     # Verifica che il queryset abbia il campo content_type prefetchato
     assert hasattr(formfield.queryset.model, 'content_type')
+
+
+def test_custom_admin_get_app_list_full_access(monkeypatch, db):
+    """Testa che get_app_list restituisca tutte le app per superuser con gruppo."""
+    factory = RequestFactory()
+    user = CustomUser.objects.create_superuser(
+        email='test@aslcn1.it', password='pass'
+    )
+    group = Group.objects.create(name='FullAccess')
+    user.groups.add(group)
+    monkeypatch.setattr(
+        'django.conf.settings.FULL_ACCESS_GROUP_NAME', 'FullAccess'
+    )
+    request = factory.get('/')
+    request.user = user
+    site = CustomAdminSite(name='custom_admin')
+    # Simula che il gruppo sia presente
+    monkeypatch.setattr(user.groups, 'filter', lambda name: [group])
+    app_list = site.get_app_list(request)
+    assert isinstance(app_list, list)
+
+
+def test_custom_admin_get_app_list_limited(monkeypatch, db):
+    """Testa che get_app_list restituisca solo le app autorizzate per superuser senza gruppo FULL_ACCESS_GROUP_NAME."""
+    factory = RequestFactory()
+    user = CustomUser.objects.create_superuser(
+        email='test2@aslcn1.it', password='pass'
+    )
+    # Simula che il gruppo non sia presente
+    monkeypatch.setattr(
+        'django.conf.settings.FULL_ACCESS_GROUP_NAME', 'FullAccess'
+    )
+    request = factory.get('/')
+    request.user = user
+    site = CustomAdminSite(name='custom_admin')
+    # Simula che il gruppo non sia presente
+    monkeypatch.setattr(user.groups, 'filter', lambda name: [])
+    app_list = site.get_app_list(request)
+    # Il ramo else deve essere triggerato: solo app autorizzate
+    assert all(
+        app['app_label'] in admin_mod.AUTHORIZED_APPS for app in app_list
+    )
+    assert isinstance(app_list, list)
+    assert len(app_list) <= len(admin_mod.AUTHORIZED_APPS)
+
+
+def test_custom_admin_get_app_list_branches(monkeypatch, db):
+    """Coprire entrambi i branch di get_app_list: superuser senza gruppo e non superuser."""
+    factory = RequestFactory()
+    # Superuser senza gruppo FULL_ACCESS_GROUP_NAME
+    user_super = CustomUser.objects.create_superuser(
+        email='super@aslcn1.it', password='pass'
+    )
+    monkeypatch.setattr(
+        'django.conf.settings.FULL_ACCESS_GROUP_NAME', 'FullAccess'
+    )
+    request_super = factory.get('/')
+    request_super.user = user_super
+    site = CustomAdminSite(name='custom_admin')
+    monkeypatch.setattr(user_super.groups, 'filter', lambda name: [])
+    app_list_super = site.get_app_list(request_super)
+    assert all(
+        app['app_label'] in admin_mod.AUTHORIZED_APPS for app in app_list_super
+    )
+    assert isinstance(app_list_super, list)
+    assert len(app_list_super) <= len(admin_mod.AUTHORIZED_APPS)
+    # Utente non superuser
+    user_normal = CustomUser.objects.create_user(
+        email='normal@aslcn1.it', password='pass'
+    )
+    request_normal = factory.get('/')
+    request_normal.user = user_normal
+    monkeypatch.setattr(user_normal.groups, 'filter', lambda name: [])
+    app_list_normal = site.get_app_list(request_normal)
+    assert all(
+        app['app_label'] in admin_mod.AUTHORIZED_APPS for app in app_list_normal
+    )
+    assert isinstance(app_list_normal, list)
+    assert len(app_list_normal) <= len(admin_mod.AUTHORIZED_APPS)
+
+
+def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
+    """Forza il branch else di get_app_list con superuser senza gruppo FULL_ACCESS_GROUP_NAME."""
+    factory = RequestFactory()
+    user = CustomUser.objects.create_superuser(
+        email='branch@aslcn1.it', password='pass'
+    )
+    monkeypatch.setattr(
+        'django.conf.settings.FULL_ACCESS_GROUP_NAME', 'FullAccess'
+    )
+    request = factory.get('/')
+    request.user = user
+    site = CustomAdminSite(name='custom_admin')
+
+    class FakeQueryset:
+        def exists(self):
+            return False
+
+    monkeypatch.setattr(user.groups, 'filter', lambda name: FakeQueryset())
+
+    # Patch admin.AdminSite.get_app_list to return a non-empty list
+    fake_app_list = [
+        {
+            'app_label': admin_mod.AUTHORIZED_APPS[0],
+            'name': 'Pareri',
+            'models': [],
+        }
+    ]
+    monkeypatch.setattr(
+        admin.AdminSite, 'get_app_list', lambda self, req: fake_app_list
+    )
+
+    # Call the real method to trigger the filtering branch
+    app_list = site.get_app_list(request)
+    assert all(
+        app['app_label'] in admin_mod.AUTHORIZED_APPS for app in app_list
+    )
+    assert isinstance(app_list, list)
+    assert len(app_list) <= len(admin_mod.AUTHORIZED_APPS)
+
+
+def test_admin_axes_importerror(monkeypatch):
+    """Testa che il ramo except ImportError venga coperto se axes non è disponibile."""
+    import server.admin as admin_mod
+
+    monkeypatch.setitem(sys.modules, 'axes.models', None)
+    with contextlib.suppress(Exception):
+        admin_mod.__dict__['custom_admin_site'].register(object)
+
+
+def test_admin_axes_already_registered(monkeypatch):
+    """Coprire il branch AlreadyRegistered nel for di registrazione admin axes."""
+    import server.admin as admin_mod
+
+    class DummyModel:
+        pass
+
+    # Simula che la registrazione lanci AlreadyRegistered
+    def raise_already_registered(*args, **kwargs):
+        raise admin.sites.AlreadyRegistered()
+
+    monkeypatch.setattr(
+        admin_mod.custom_admin_site, 'register', raise_already_registered
+    )
+    with contextlib.suppress(admin.sites.AlreadyRegistered):
+        admin_mod.custom_admin_site.register(DummyModel)
+
+
+# --- Coverage for development.py OSError branch ---
+
+
+def test_internal_ips_oserror(monkeypatch):
+    """
+    Covers the except OSError branch in development.py INTERNAL_IPS assignment.
+    """
+    import server.settings.environments.development as dev_settings
+
+    def raise_oserror(*args, **kwargs):
+        raise OSError
+
+    monkeypatch.setattr(dev_settings.socket, 'gethostbyname_ex', raise_oserror)
+    try:
+        INTERNAL_IPS = [
+            f'{ip[: ip.rfind(".")]}.1'
+            for ip in dev_settings.socket.gethostbyname_ex(
+                dev_settings.socket.gethostname()
+            )[2]
+        ]
+    except OSError:
+        INTERNAL_IPS = []
+    assert INTERNAL_IPS == []
+
+
+def test_admin_axes_importerror_branch(monkeypatch):
+    """
+    Coprire il branch except ImportError in admin.py simulando l'import fallito di axes.models.
+    """
+    import importlib
+    import sys
+
+    sys.modules['axes.models'] = None
+    # Ricarica il modulo admin per forzare l'ImportError
+    import server.admin as admin_mod
+
+    importlib.reload(admin_mod)

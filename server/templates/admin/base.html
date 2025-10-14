@@ -145,15 +145,6 @@
                                 </a>
                             </li>
                         {% endif %}
-                        {% if 'django.contrib.admindocs'|app_is_installed %}
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                   href="{% url 'django-admindocs-docroot' %}"
-                                   role="button">
-                                    <i class="fas fa-book"></i>
-                                </a>
-                            </li>
-                        {% endif %}
                         {% if jazzmin_settings.language_chooser %}
                             {% get_available_languages as LANGUAGES %}
                             {% get_language_info_list for LANGUAGES as languages %}

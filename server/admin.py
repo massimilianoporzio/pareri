@@ -1,3 +1,5 @@
+import contextlib
+
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
@@ -6,6 +8,8 @@ from django.contrib.contenttypes.models import ContentType
 
 from server.apps.accounts.admin import CustomUserAdmin
 from server.apps.accounts.models import CustomUser
+from server.apps.main.admin import BlogPostAdmin
+from server.apps.main.models import BlogPost
 
 # Definisci la lista delle app autorizzate per gli altri superuser
 AUTHORIZED_APPS = [
@@ -61,7 +65,34 @@ class GroupAdmin(admin.ModelAdmin):
         return super().formfield_for_manytomany(db_field, request, **kwargs)
 
 
+class PermissionAdmin(admin.ModelAdmin):
+    """Ottimizza la queryset per Permission per evitare N+1 su content_type."""
+
+    def get_queryset(self, request):
+        """Restituisce una queryset con content_type prefetchato."""
+        return super().get_queryset(request).select_related('content_type')
+
+
 custom_admin_site.register(Group, GroupAdmin)
-custom_admin_site.register(Permission)
+custom_admin_site.register(Permission, PermissionAdmin)
 custom_admin_site.register(ContentType)
 custom_admin_site.register(LogEntry)
+
+custom_admin_site.register(BlogPost, BlogPostAdmin)
+try:
+    from axes.models import AccessAttempt, AccessFailureLog, AccessLog
+    from django.contrib.admin.sites import AlreadyRegistered
+    from django.http import HttpResponseForbidden
+
+    class ForbiddenAddAdmin(admin.ModelAdmin):
+        """Admin che restituisce 403 Forbidden sulla pagina di add."""
+
+        def add_view(self, request, form_url='', extra_context=None):
+            """Disabilita la pagina di add restituendo 403 Forbidden."""
+            return HttpResponseForbidden()
+
+    for model in (AccessAttempt, AccessLog, AccessFailureLog):
+        with contextlib.suppress(AlreadyRegistered):
+            custom_admin_site.register(model, ForbiddenAddAdmin)
+except ImportError:
+    pass
