@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
 # Setting the development status:
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     config('DOMAIN_NAME'),
