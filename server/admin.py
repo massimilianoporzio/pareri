@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib import admin
 from django.contrib.admin.models import LogEntry
 from django.contrib.auth.models import Group, Permission
@@ -5,6 +6,12 @@ from django.contrib.contenttypes.models import ContentType
 
 from server.apps.accounts.admin import CustomUserAdmin
 from server.apps.accounts.models import CustomUser
+
+# Definisci la lista delle app autorizzate per gli altri superuser
+AUTHORIZED_APPS = [
+    'pareri',
+    # Aggiungi qui gli 'app_label' delle app che vuoi mostrare
+]
 
 
 class CustomAdminSite(admin.AdminSite):
@@ -20,10 +27,17 @@ class CustomAdminSite(admin.AdminSite):
         Lo fa in base ai gruppi dell'utente.
         """
         app_list = super().get_app_list(request)
-        return app_list
-        # Altrimenti mostra solo le app autorizzate (personalizza qui)
-        # AUTHORIZED_APPS = ['server.apps.main', 'server.apps.accounts']
-        # return [app for app in app_list if app['app_label'] in AUTHORIZED_APPS]
+        # Controlla se l'utente appartiene al gruppo "Full Access Admin"
+        user_has_full_access_group = (
+            request.user.is_superuser
+            and request.user.groups.filter(
+                name=settings.FULL_ACCESS_GROUP_NAME
+            ).exists()
+        )
+
+        if user_has_full_access_group:
+            return app_list
+        return [app for app in app_list if app['app_label'] in AUTHORIZED_APPS]
 
 
 custom_admin_site = CustomAdminSite(name='custom_admin')
@@ -34,9 +48,12 @@ custom_admin_site.register(CustomUser, CustomUserAdmin)
 
 
 class GroupAdmin(admin.ModelAdmin):
+    """Admin per il modello Group con filtro orizzontale per i permessi."""
+
     filter_horizontal = ('permissions',)
 
     def formfield_for_manytomany(self, db_field, request, **kwargs):
+        """Ottimizza la query per i permessi."""
         if db_field.name == 'permissions':
             kwargs['queryset'] = Permission.objects.select_related(
                 'content_type'

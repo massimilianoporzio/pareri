@@ -26,6 +26,7 @@ PROJECT_APPS: tuple[str, ...] = (
     'server.apps.accounts',
     'server.common',
     'server.common.django',
+    'server.apps.theme',
 )
 
 # --- Third-party apps ---
@@ -36,6 +37,8 @@ THIRD_PARTY_APPS: tuple[str, ...] = (
     'health_check.cache',
     'health_check.storage',
     'jazzmin',
+    'tailwind',
+    'django_browser_reload',
 )
 
 # --- Django core apps ---
@@ -53,18 +56,21 @@ INSTALLED_APPS: tuple[str, ...] = (
     PROJECT_APPS + THIRD_PARTY_APPS + DJANGO_CORE_APPS
 )
 
+TAILWIND_APP_NAME = 'server.apps.theme'
+NPM_BIN_PATH = r'C:\Users\admin.porzio\scoop\apps\nodejs\current\bin\npm.cmd'
+
 JAZZMIN_SETTINGS = {
     # css per cambiare qualche elemento
     'custom_css': 'css/admin.css',
-    # title of the window (Will default to current_admin_site.site_title if absent or None)
+    # title of the window
     'site_title': 'Pratiche & Pareri',
-    # Title on the login screen (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    # Title on the login screen (19 chars max)
     'site_header': 'Pratiche & Pareri',
-    # Title on the brand (19 chars max) (defaults to current_admin_site.site_header if absent or None)
+    # Title on the brand (19 chars max)
     'site_brand': 'Pratiche & Pareri',
-    # Logo to use for your site, must be present in static files, used for brand on top left
+    # Logo to use for your site, must be present in static files
     'site_logo': 'images/icon.png',
-    # Logo to use for your site, must be present in static files, used for login form logo (defaults to site_logo)
+    # Logo to use for your site, must be present in static files
     'login_logo': 'images/logo2.png',
     # Logo to use for login form in dark themes (defaults to login_logo)
     'login_logo_dark': 'images/logo2.png',
@@ -74,7 +80,7 @@ JAZZMIN_SETTINGS = {
     'welcome_sign': 'Benvenuti su Pratiche&Pareri',
     # Copyright on the footer
     'copyright': 'Massimiliano Porzio',
-    # Whether to link font from fonts.googleapis.com (use custom_css to supply font otherwise)
+    # Whether to link font from google (use custom_css to supply font otherwise)
     'use_google_fonts_cdn': True,
     # Whether to show the UI customizer on the sidebar
     'show_ui_builder': True,
@@ -94,8 +100,8 @@ JAZZMIN_SETTINGS = {
         'datoriLavoro.sede': 'fas fa-location-dot',
         'datoriLavoro.datoreLavoro': 'fas fa-user-tie',
     },
-    # "usermenu_links": [
-    #     {"name": "Logout", "url": "/admin/logout/", "icon": "fas fa-power-off"},
+    # 'usermenu_links': [
+    #     {'name': 'Logout', 'url': '/admin/logout/', 'icon': 'fas fa-power-off'},
     # ],
     # Aggiungi questa linea per disabilitare il link di logout predefinito
     'show_logout': False,
@@ -122,7 +128,7 @@ JAZZMIN_UI_TWEAKS = {
     'theme': 'default',
     'dark_mode_theme': None,
     'button_classes': {
-        'primary': 'btn-primary',
+        'primary': 'btn-info',
         'secondary': 'btn-secondary',
         'info': 'btn-info',
         'warning': 'btn-warning',
@@ -133,6 +139,8 @@ JAZZMIN_UI_TWEAKS = {
 
 
 MIDDLEWARE: tuple[str, ...] = (
+    # Whitenoise per servire file STATICFILES_DIRS
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     # Logging:
     'server.settings.components.logging.LoggingContextVarsMiddleware',
     # Content Security Policy:
@@ -152,6 +160,8 @@ MIDDLEWARE: tuple[str, ...] = (
     'axes.middleware.AxesMiddleware',
     # CRUM - Current Request User Middleware:
     'crum.CurrentRequestUserMiddleware',
+    # django-browser-reload
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -224,6 +234,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            BASE_DIR / 'templates',
             # Contains plain text templates, like `robots.txt`:
             BASE_DIR.joinpath('server', 'common', 'django', 'templates'),
         ],

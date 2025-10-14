@@ -27,7 +27,7 @@ if TYPE_CHECKING:
 
 # Setting the development status:
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     config('DOMAIN_NAME'),
@@ -38,40 +38,21 @@ ALLOWED_HOSTS = [
 ]
 
 
-# Installed apps for development only:
+if DEBUG:
+    INSTALLED_APPS += ('debug_toolbar',)
+    MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
 
+# Altri app e middleware di sviluppo:
 INSTALLED_APPS += (
-    # Better debug:
-    'debug_toolbar',
     'zeal',
-    # Linting migrations:
     'django_migration_linter',
-    # django-test-migrations:
     'django_test_migrations.contrib.django_checks.AutoNames',
-    # This check might be useful in production as well,
-    # so it might be a good idea to move `django-test-migrations`
-    # to prod dependencies and use this check in the main `settings.py`.
-    # This will check that your database is configured properly,
-    # when you run `python manage.py check` before deploy.
     'django_test_migrations.contrib.django_checks.DatabaseConfiguration',
-    # django-extra-checks:
     'extra_checks',
-    # django-query-counter:
     'query_counter',
-    # django-drifter:
     'drifter',
 )
-
-
-# Django debug toolbar:
-# https://django-debug-toolbar.readthedocs.io
-
-MIDDLEWARE += (
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    # https://github.com/conformist-mw/django-query-counter
-    # Prints how many queries were executed, useful for the APIs.
-    'query_counter.middleware.DjangoQueryCounterMiddleware',
-)
+MIDDLEWARE += ('query_counter.middleware.DjangoQueryCounterMiddleware',)
 
 # https://django-debug-toolbar.readthedocs.io/en/stable/installation.html#configure-internal-ips
 try:  # This might fail on some OS
