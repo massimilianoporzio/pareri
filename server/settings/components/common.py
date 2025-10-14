@@ -57,7 +57,7 @@ INSTALLED_APPS: tuple[str, ...] = (
 )
 
 TAILWIND_APP_NAME = 'server.apps.theme'
-NPM_BIN_PATH = r'C:\Users\admin.porzio\scoop\apps\nodejs\current\bin\npm.cmd'
+NPM_BIN_PATH = config('NPM_BIN_PATH')
 
 JAZZMIN_SETTINGS = {
     # css per cambiare qualche elemento
@@ -100,10 +100,6 @@ JAZZMIN_SETTINGS = {
         'datoriLavoro.sede': 'fas fa-location-dot',
         'datoriLavoro.datoreLavoro': 'fas fa-user-tie',
     },
-    # 'usermenu_links': [
-    #     {'name': 'Logout', 'url': '/admin/logout/', 'icon': 'fas fa-power-off'},
-    # ],
-    # Aggiungi questa linea per disabilitare il link di logout predefinito
     'show_logout': False,
 }
 JAZZMIN_UI_TWEAKS = {
@@ -203,7 +199,7 @@ USE_I18N = True
 
 LANGUAGES = (
     ('en', _('English')),
-    ('ru', _('Russian')),
+    ('it', _('Italian')),
 )
 
 LOCALE_PATHS = ('locale/',)
@@ -234,7 +230,9 @@ TEMPLATES = [
         'APP_DIRS': True,
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'templates',
+            BASE_DIR / 'server' / 'templates',
+            # pagine 404 e 500
+            BASE_DIR / 'server' / 'apps' / 'theme' / 'static_src',
             # Contains plain text templates, like `robots.txt`:
             BASE_DIR.joinpath('server', 'common', 'django', 'templates'),
         ],

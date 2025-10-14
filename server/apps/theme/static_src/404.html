@@ -6,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>404 - Pagina non trovata</title>
     <!-- Caricamento di Tailwind CSS tramite CDN per una visualizzazione immediata -->
-    {% comment %}
-    <script src="https://cdn.tailwindcss.com"></script>
-    {% endcomment %}
+
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
     <style>
       /* Aggiunta di un font personalizzato per un'estetica migliore */
       @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
@@ -20,10 +20,10 @@
     <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
   </head>
   <body class="h-full bg-gray-900 flex items-center justify-center">
-    <main class="text-center bg-red-500">
+    <main class="text-center rounded-3xl">
       <div class="px-6 py-24 lg:px-8">
         <p class="text-base font-semibold text-[var(--colore-principale)]">
-          404
+          404 <span class="font">Errore</span>
         </p>
         <h1
           class="mt-4 text-5xl font-semibold tracking-tight text-balance text-white sm:text-7xl"
