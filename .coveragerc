@@ -4,3 +4,4 @@ omit =
     server/media/*
     server/apps/*/migrations/*
     manage.py
+    scripts/*
