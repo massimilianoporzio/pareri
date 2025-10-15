@@ -40,6 +40,7 @@ class DummyModel(models.Model):
     """Dummy model per test di copertura admin."""
 
     name = models.CharField(max_length=32)
+    related = models.ManyToManyField('self', symmetrical=False, blank=True)
 
     def __str__(self):
         """Rappresentazione stringa del DummyModel."""

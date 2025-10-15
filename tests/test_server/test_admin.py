@@ -368,3 +368,31 @@ def test_dummy_model_str():
 
     obj = DummyModel(name='TestName')
     assert str(obj) == 'TestName'
+
+
+def test_group_admin_formfield_for_manytomany_else():
+    """Covers the else branch in GroupAdmin.formfield_for_manytomany using DummyModel.related."""
+    from django.http import HttpRequest
+
+    from server.admin import GroupAdmin
+    from server.apps.main.models import DummyModel
+
+    admin_instance = GroupAdmin(DummyModel, admin.site)
+    db_field = DummyModel._meta.get_field('related')
+    request = HttpRequest()
+    result = admin_instance.formfield_for_manytomany(db_field, request)
+    assert result is not None
+
+
+def test_dummy_admin_formfield_for_manytomany_else():
+    """Covers the else branch in GroupAdmin.formfield_for_manytomany using DummyModel.related."""
+    from django.http import HttpRequest
+
+    from server.admin import GroupAdmin
+    from server.apps.main.models import DummyModel
+
+    admin_instance = GroupAdmin(DummyModel, admin.site)
+    db_field = DummyModel._meta.get_field('related')
+    request = HttpRequest()
+    result = admin_instance.formfield_for_manytomany(db_field, request)
+    assert result is not None
