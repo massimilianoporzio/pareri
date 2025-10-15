@@ -1,4 +1,5 @@
 """Tests for additional models and forms in accounts app."""
+# pylint: disable=unused-argument
 
 import builtins
 

@@ -1,4 +1,5 @@
 """Tests for index view."""
+# pylint: disable=unused-argument
 
 from http import HTTPStatus
 

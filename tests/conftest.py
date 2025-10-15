@@ -1,3 +1,4 @@
+# pylint: disable=unused-argument
 """Pytest configuration and fixtures for the test suite.
 
 This module provides global pytest plugins and reusable fixtures used

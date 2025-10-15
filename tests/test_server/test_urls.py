@@ -1,4 +1,5 @@
 """Tests for server URLs."""
+# pylint: disable=unused-argument
 
 from http import HTTPStatus
 

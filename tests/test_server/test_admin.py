@@ -1,7 +1,7 @@
-# ruff: noqa: SLF001
+# ruff: noqa: SLF001, S106, PLC0415, N806
 """Test per le pagine admin e accessi customizzati."""
 
-# pylint: disable=protected-access
+# pylint: disable=protected-access, unused-argument, invalid-name, redefined-outer-name, reimported, import-outside-toplevel
 
 import contextlib
 import sys
@@ -176,7 +176,7 @@ def test_formfield_for_manytomany_real():
 
 
 def test_custom_admin_get_app_list_full_access(monkeypatch, db):
-    """Testa che get_app_list restituisca tutte le app per superuser con gruppo."""
+    """Testa che get_app_list dia tutte le app per superuser con gruppo."""
     factory = RequestFactory()
     user = CustomUser.objects.create_superuser(
         email='test@aslcn1.it', password='pass'
@@ -196,7 +196,10 @@ def test_custom_admin_get_app_list_full_access(monkeypatch, db):
 
 
 def test_custom_admin_get_app_list_limited(monkeypatch, db):
-    """Testa che get_app_list restituisca solo le app autorizzate per superuser senza gruppo FULL_ACCESS_GROUP_NAME."""
+    """Testa che get_app_list restituisca solo le app autorizzate per superuser.
+
+    senza gruppo FULL_ACCESS_GROUP_NAME.
+    """
     factory = RequestFactory()
     user = CustomUser.objects.create_superuser(
         email='test2@aslcn1.it', password='pass'
@@ -220,7 +223,10 @@ def test_custom_admin_get_app_list_limited(monkeypatch, db):
 
 
 def test_custom_admin_get_app_list_branches(monkeypatch, db):
-    """Coprire entrambi i branch di get_app_list: superuser senza gruppo e non superuser."""
+    """Coprire entrambi i branch di get_app_list.
+
+    superuser senza gruppo e non superuser.
+    """
     factory = RequestFactory()
     # Superuser senza gruppo FULL_ACCESS_GROUP_NAME
     user_super = CustomUser.objects.create_superuser(
@@ -255,7 +261,10 @@ def test_custom_admin_get_app_list_branches(monkeypatch, db):
 
 
 def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
-    """Forza il branch else di get_app_list con superuser senza gruppo FULL_ACCESS_GROUP_NAME."""
+    """Forza il branch else di get_app_list con superuser.
+
+    senza gruppo FULL_ACCESS_GROUP_NAME.
+    """
     factory = RequestFactory()
     user = CustomUser.objects.create_superuser(
         email='branch@aslcn1.it', password='pass'
@@ -268,7 +277,10 @@ def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
     site = CustomAdminSite(name='custom_admin')
 
     class FakeQueryset:
+        """Finta queryset che simula exists()."""
+
         def exists(self):
+            """Simula l'esistenza di un gruppo."""
             return False
 
     fq = FakeQueryset()
@@ -298,7 +310,10 @@ def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
 
 
 def test_admin_axes_importerror(monkeypatch):
-    """Testa che il ramo except ImportError venga coperto se axes non è disponibile."""
+    """Testa che il ramo except ImportError venga coperto.
+
+    se axes non è disponibile.
+    """
     import server.admin as admin_mod
 
     monkeypatch.setitem(sys.modules, 'axes.models', None)
@@ -307,15 +322,18 @@ def test_admin_axes_importerror(monkeypatch):
 
 
 def test_admin_axes_already_registered(monkeypatch):
-    """Coprire il branch AlreadyRegistered nel for di registrazione admin axes."""
+    """Coprire il branch AlreadyRegistered.
+
+    nel for di registrazione admin axes.
+    """
     import server.admin as admin_mod
 
     class DummyModel:
-        pass
+        """Modello dummy per testare la registrazione admin."""
 
     # Simula che la registrazione lanci AlreadyRegistered
     def raise_already_registered(*args, **kwargs):
-        raise admin.sites.AlreadyRegistered()
+        raise admin.sites.AlreadyRegistered
 
     monkeypatch.setattr(
         admin_mod.custom_admin_site, 'register', raise_already_registered
@@ -329,7 +347,9 @@ def test_admin_axes_already_registered(monkeypatch):
 
 def test_internal_ips_oserror(monkeypatch):
     """
-    Covers the except OSError branch in development.py INTERNAL_IPS assignment.
+    Covers the except OSError branch in development.py.
+
+    INTERNAL_IPS assignment.
     """
     import server.settings.environments.development as dev_settings
 
@@ -351,7 +371,9 @@ def test_internal_ips_oserror(monkeypatch):
 
 def test_admin_axes_importerror_branch(monkeypatch):
     """
-    Coprire il branch except ImportError in admin.py simulando l'import fallito di axes.models.
+    Coprire il branch except ImportError in admin.py.
+
+    Simulan l'import fallito di axes.models.
     """
     import importlib
     import sys
@@ -364,6 +386,7 @@ def test_admin_axes_importerror_branch(monkeypatch):
 
 
 def test_dummy_model_str():
+    """Covers the __str__ method of DummyModel."""
     from server.apps.main.models import DummyModel
 
     obj = DummyModel(name='TestName')
@@ -371,7 +394,10 @@ def test_dummy_model_str():
 
 
 def test_group_admin_formfield_for_manytomany_else():
-    """Covers the else branch in GroupAdmin.formfield_for_manytomany using DummyModel.related."""
+    """Covers the else branch in GroupAdmin.formfield_for_manytomany.
+
+    Uses DummyModel.related.
+    """
     from django.http import HttpRequest
 
     from server.admin import GroupAdmin
@@ -385,7 +411,10 @@ def test_group_admin_formfield_for_manytomany_else():
 
 
 def test_dummy_admin_formfield_for_manytomany_else():
-    """Covers the else branch in GroupAdmin.formfield_for_manytomany using DummyModel.related."""
+    """Covers the else branch in GroupAdmin.formfield_for_manytomany.
+
+    Uses DummyModel.related.
+    """
     from django.http import HttpRequest
 
     from server.admin import GroupAdmin

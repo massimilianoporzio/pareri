@@ -1,4 +1,8 @@
+"""Tests for logging configuration."""
+
 import logging
+
+# pylint: disable=unused-argument
 import re
 from typing import Final
 

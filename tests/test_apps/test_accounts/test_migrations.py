@@ -1,4 +1,5 @@
 """Tests for accounts migrations."""
+# pylint: disable=unused-argument
 
 import pytest
 from django_test_migrations.migrator import Migrator

@@ -1,5 +1,8 @@
+"""Property-based tests for the BlogPost model."""
+
 from typing import final
 
+# pylint: disable=unused-argument
 from hypothesis import HealthCheck, given, settings
 from hypothesis.extra import django
 
