@@ -271,6 +271,9 @@ def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
         def exists(self):
             return False
 
+    fq = FakeQueryset()
+    assert fq.exists() is False
+
     monkeypatch.setattr(user.groups, 'filter', lambda name: FakeQueryset())
 
     # Patch admin.AdminSite.get_app_list to return a non-empty list
@@ -358,3 +361,10 @@ def test_admin_axes_importerror_branch(monkeypatch):
     import server.admin as admin_mod
 
     importlib.reload(admin_mod)
+
+
+def test_dummy_model_str():
+    from server.apps.main.models import DummyModel
+
+    obj = DummyModel(name='TestName')
+    assert str(obj) == 'TestName'

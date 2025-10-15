@@ -39,8 +39,10 @@ ALLOWED_HOSTS = [
 
 
 if DEBUG:
-    INSTALLED_APPS += ('debug_toolbar',)
-    MIDDLEWARE += ('debug_toolbar.middleware.DebugToolbarMiddleware',)
+    INSTALLED_APPS += ('debug_toolbar',)  # pragma: no cover
+    MIDDLEWARE += (
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    )  # pragma: no cover
 
 # Altri app e middleware di sviluppo:
 INSTALLED_APPS += (
