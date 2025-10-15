@@ -1,4 +1,5 @@
 """Tests for accounts app configuration and admin registration."""
+# pylint: disable=unused-argument
 
 import pytest
 from django.contrib import admin

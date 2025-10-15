@@ -1,4 +1,5 @@
 """Tests for server URLs."""
+# pylint: disable=unused-argument
 
 from http import HTTPStatus
 
@@ -24,19 +25,6 @@ def test_admin_authorized(admin_client: Client) -> None:
     """Ensures that admin panel is accessible."""
     response = admin_client.get('/pareri/')
     assert response.status_code == HTTPStatus.OK
-
-
-def test_admin_docs_unauthorized(client: Client) -> None:
-    """Ensures that admin panel docs requires auth."""
-    response = client.get('/pareri/doc/')
-    assert response.status_code == HTTPStatus.FOUND
-
-
-def test_admin_docs_authorized(admin_client: Client) -> None:
-    """Ensures that admin panel docs are accessible."""
-    response = admin_client.get('/pareri/doc/')
-    assert response.status_code == HTTPStatus.OK
-    assert b'docutils' not in response.content
 
 
 @pytest.mark.parametrize(

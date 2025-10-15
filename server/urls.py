@@ -11,24 +11,19 @@ files serving technique in development.
 
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
-from django.contrib.admindocs import urls as admindocs_urls
 from django.urls import include, path
 from django.views.generic import TemplateView
 from health_check import urls as health_urls
 
+from server.admin import custom_admin_site
 from server.apps.main import urls as main_urls
-
-admin.autodiscover()
 
 urlpatterns = [
     # Apps:
     path('main/', include(main_urls, namespace='main')),
     # Health checks:
     path('health/', include(health_urls)),
-    # django-admin:
-    path('pareri/doc/', include(admindocs_urls)),
-    path('pareri/', admin.site.urls),
+    path('pareri/', custom_admin_site.urls),
     # Text and xml static files:
     path(
         'robots.txt',
@@ -49,11 +44,22 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:  # pragma: no cover
-    import debug_toolbar
+    try:
+        import debug_toolbar
+
+        DEBUG_TOOLBAR_URL = path('__debug__/', include(debug_toolbar.urls))
+    except ImportError:
+        DEBUG_TOOLBAR_URL = None
+
+    extra_urls = [
+        # URLs specific only to django-browser-reload:
+        path('__reload__/', include('django_browser_reload.urls')),
+    ]
+    if DEBUG_TOOLBAR_URL:
+        extra_urls.insert(0, DEBUG_TOOLBAR_URL)
 
     urlpatterns = [
-        # URLs specific only to django-debug-toolbar:
-        path('__debug__/', include(debug_toolbar.urls)),
+        *extra_urls,
         *urlpatterns,
         # Serving media files in development only:
         *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),

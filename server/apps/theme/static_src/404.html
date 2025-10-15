@@ -1,0 +1,56 @@
+{% load static %}
+<!doctype html>
+<html lang="it" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - Pagina non trovata</title>
+    <!-- Caricamento di Tailwind CSS tramite CDN per una visualizzazione immediata -->
+
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+
+    <style>
+      /* Aggiunta di un font personalizzato per un'estetica migliore */
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+    </style>
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
+  </head>
+  <body class="h-full bg-gray-900 flex items-center justify-center">
+    <main class="text-center rounded-3xl">
+      <div class="px-6 py-24 lg:px-8">
+        <p class="text-base font-semibold text-[var(--colore-principale)]">
+          404 <span class="font">Errore</span>
+        </p>
+        <h1
+          class="mt-4 text-5xl font-semibold tracking-tight text-balance text-white sm:text-7xl"
+        >
+          Pagina non trovata
+        </h1>
+        <p
+          class="mt-6 text-lg font-medium text-pretty text-gray-400 sm:text-xl/8"
+        >
+          Siamo spiacenti, non siamo riusciti a trovare la pagina che stai
+          cercando.
+        </p>
+        <div class="mt-10 flex items-center justify-center gap-x-6">
+          <a
+            href="{% url 'admin:index' %}"
+            class="rounded-md bg-[var(--colore-principale)] px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-[var(--colore-secondario)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+          >
+            Torna alla home
+          </a>
+          <a
+            href="mailto:massimiliano.porzio@aslcn1.it"
+            class="text-sm font-semibold text-white"
+          >
+            Contatta il supporto <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

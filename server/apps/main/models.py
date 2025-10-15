@@ -33,3 +33,15 @@ class BlogPost(models.Model):
     def __str__(self) -> str:
         """All django models should have this method."""
         return textwrap.wrap(self.title, _POST_TITLE_MAX_LENGTH // 4)[0]
+
+
+# Dummy model per test di copertura admin
+class DummyModel(models.Model):
+    """Dummy model per test di copertura admin."""
+
+    name = models.CharField(max_length=32)
+    related = models.ManyToManyField('self', symmetrical=False, blank=True)
+
+    def __str__(self):
+        """Rappresentazione stringa del DummyModel."""
+        return self.name

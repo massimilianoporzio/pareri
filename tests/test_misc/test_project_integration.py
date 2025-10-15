@@ -1,4 +1,5 @@
 """Project-level integration tests."""
+# pylint: disable=unused-argument
 
 import importlib
 

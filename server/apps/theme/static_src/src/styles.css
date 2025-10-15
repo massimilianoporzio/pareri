@@ -1,0 +1,134 @@
+/*
+* This is where you can configure the folders that Tailwind will scan.
+*
+* For detailed documents, check the Tailwind docs at:
+*
+* https://tailwindcss.com/docs/detecting-classes-in-source-files#explicitly-registering-sources
+*
+* This default configuration will scan all folder in your root project directory.
+*
+* Here is an example configuration that will only scan your templates/ folder:
+*
+* @import "tailwindcss" source(none);
+*
+* @source "../../../templates";
+*/
+
+@import "tailwindcss";
+
+/* I tuoi stili personalizzati per la pagina di login */
+.jazzmin-login-page {
+  background-color: #60758a; /* Questo è un grigio scuro */
+}
+/* Sovrascrivi il colore di sfondo della card */
+.login-card-body,
+.register-card-body {
+  background-color: #fff !important; /* Colore bianco per la card, usa !important per forzare l'override */
+}
+/* Sovrascrivi il colore del pulsante quando è in stato di focus o attivo */
+/* Sovrascrivi il colore del pulsante usando la variabile CSS */
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: var(--colore-principale) !important;
+  border-color: var(--colore-principale) !important;
+}
+/* Stili per il menu in alto e gli elementi del dropdown */
+.dropdown-item:hover,
+.dropdown-item:focus {
+  background-color: var(--colore-principale) !important;
+  color: white !important;
+}
+
+/* Sovrascrivi anche gli stili per i link della navbar */
+.nav-link:hover,
+.nav-link:focus {
+  background-color: var(--colore-principale) !important;
+  color: white !important;
+}
+.accent-primary .dropdown-item.active,
+.accent-primary .dropdown-item:active {
+  background-color: var(--colore-principale) !important;
+  color: white !important;
+}
+/* Stile per l'icona "History" */
+.bg-blue {
+  background-color: var(--colore-principale) !important;
+}
+.content-wrapper {
+  background-color: #f4f4f4;
+}
+
+/* Allinea icone e campi nella stessa riga */
+.related-widget-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Allinea le colonne della tabella (es. Sede Legale?, Cancellare?) */
+.inline-related table thead th,
+.inline-related table tbody td {
+  vertical-align: middle;
+}
+
+/* Allinea le icone dentro le celle della tabella */
+.inline-related table tbody td img {
+  vertical-align: middle;
+}
+
+/* Assicura che le caselle di spunta siano centrate */
+.form-row .field-is_sede_legale,
+.form-row .field-DELETE {
+  text-align: center;
+}
+
+*
+  Centra
+  le
+  celle
+  delle
+  checkbox
+  nel
+  formset
+  inline
+  */
+  .inline-related
+  table
+  th.column-is_sede_legale,
+.inline-related table th.column-sede_legale,
+.inline-related table td.field-is_sede_legale,
+.inline-related table th.column-delete,
+.inline-related table td.delete {
+  text-align: center;
+  vertical-align: middle;
+}
+.inline-related table th.column-is_sede_legale,
+.inline-related table th.column-delete {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Allinea il contenuto delle celle "Sede Legale?" e "Cancellare?" */
+.inline-related table td.field-is_sede_legale,
+.inline-related table td.delete {
+  text-align: center;
+  vertical-align: middle;
+}
+/* Stile per i tab non attivi quando ci si passa sopra con il mouse */
+.nav-tabs .nav-item .nav-link:not(.active):hover {
+  background-color: var(
+    --colore-principale
+  ); /* O il colore esatto del tuo tema */
+  color: white !important;
+}
+
+/* Stile per i tab attivi */
+.nav-tabs .nav-item .nav-link.active {
+  background-color: var(--colore-principale);
+  color: white !important;
+}
+
+#datorelavorosede_set-group > div > fieldset > ul > li {
+  color: red;
+  font-weight: bold;
+}

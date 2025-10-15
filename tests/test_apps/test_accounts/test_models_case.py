@@ -1,4 +1,5 @@
 """Tests for the CustomUser model in accounts app."""
+# pylint: disable=unused-argument
 
 from typing import final
 

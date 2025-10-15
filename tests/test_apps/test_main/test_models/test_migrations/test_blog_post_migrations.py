@@ -1,4 +1,8 @@
+"""Tests for the blog post migrations."""
+
 import pytest
+
+# pylint: disable=unused-argument
 from django_test_migrations.migrator import Migrator
 
 from server.apps.main.urls import app_name

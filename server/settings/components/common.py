@@ -19,32 +19,123 @@ SECRET_KEY = config('DJANGO_SECRET_KEY')
 
 # Application definition:
 
-INSTALLED_APPS: tuple[str, ...] = (
-    # Your apps go here:
+
+# --- Project apps ---
+PROJECT_APPS: tuple[str, ...] = (
     'server.apps.main',
     'server.apps.accounts',
     'server.common',
-    # Default django apps:
+    'server.common.django',
+    'server.apps.theme',
+)
+
+# --- Third-party apps ---
+THIRD_PARTY_APPS: tuple[str, ...] = (
+    'axes',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
+    'jazzmin',
+    'tailwind',
+    'django_browser_reload',
+)
+
+# --- Django core apps ---
+DJANGO_CORE_APPS: tuple[str, ...] = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # django-admin:
     'django.contrib.admin',
-    'django.contrib.admindocs',
-    # Security:
-    'axes',
-    # Health checks:
-    # You may want to enable other checks as well,
-    # see: https://github.com/KristianOellegaard/django-health-check
-    'health_check',
-    'health_check.db',
-    'health_check.cache',
-    'health_check.storage',
 )
 
+INSTALLED_APPS: tuple[str, ...] = (
+    PROJECT_APPS + THIRD_PARTY_APPS + DJANGO_CORE_APPS
+)
+
+TAILWIND_APP_NAME = 'server.apps.theme'
+NPM_BIN_PATH = config('NPM_BIN_PATH', default='/usr/bin/npm')
+
+JAZZMIN_SETTINGS = {
+    # css per cambiare qualche elemento
+    'custom_css': 'css/admin.css',
+    # title of the window
+    'site_title': 'Pratiche & Pareri',
+    # Title on the login screen (19 chars max)
+    'site_header': 'Pratiche & Pareri',
+    # Title on the brand (19 chars max)
+    'site_brand': 'Pratiche & Pareri',
+    # Logo to use for your site, must be present in static files
+    'site_logo': 'images/icon.png',
+    # Logo to use for your site, must be present in static files
+    'login_logo': 'images/logo2.png',
+    # Logo to use for login form in dark themes (defaults to login_logo)
+    'login_logo_dark': 'images/logo2.png',
+    # CSS classes that are applied to the logo above
+    'site_logo_classes': 'img-circle  bg-transparent',
+    # Welcome text on the login screen
+    'welcome_sign': 'Benvenuti su Pratiche&Pareri',
+    # Copyright on the footer
+    'copyright': 'Massimiliano Porzio',
+    # Whether to link font from google (use custom_css to supply font otherwise)
+    'use_google_fonts_cdn': True,
+    # Whether to show the UI customizer on the sidebar
+    'show_ui_builder': True,
+    # abilita traduzione in jazzmin
+    'i18n_enabled': True,
+    # icons for apps:
+    'icons': {
+        'cities_light.cityProxy': 'fas fa-city',
+        'cities_light.countryProxy': 'fas fa-earth-europe',
+        'cities_light.regionProxy': 'fas fa-map-marker-alt',
+        'pareri.tipoOrigine': 'fas fa-building-columns',
+        'pareri.espertoRadioprotezione': 'fas fa-radiation',
+        'pareri.tipoPratica': 'fas fa-file-invoice',
+        'pareri.tipoProcesso': 'fas fa-gear',
+        'accounts.customuser': 'fas fa-user',
+        'auth.Group': 'fas fa-users',
+        'datoriLavoro.sede': 'fas fa-location-dot',
+        'datoriLavoro.datoreLavoro': 'fas fa-user-tie',
+    },
+    'show_logout': False,
+}
+JAZZMIN_UI_TWEAKS = {
+    'navbar_small_text': False,
+    'footer_small_text': False,
+    'body_small_text': False,
+    'brand_small_text': False,
+    'brand_colour': 'navbar-pink',
+    'navbar': 'navbar-white navbar-light',
+    'no_navbar_border': False,
+    'navbar_fixed': False,
+    'layout_boxed': False,
+    'footer_fixed': False,
+    'sidebar_fixed': False,
+    'sidebar': 'sidebar-dark-maroon',
+    'sidebar_nav_small_text': False,
+    'sidebar_disable_expand': False,
+    'sidebar_nav_child_indent': False,
+    'sidebar_nav_compact_style': False,
+    'sidebar_nav_legacy_style': False,
+    'sidebar_nav_flat_style': False,
+    'theme': 'default',
+    'dark_mode_theme': None,
+    'button_classes': {
+        'primary': 'btn-info',
+        'secondary': 'btn-secondary',
+        'info': 'btn-info',
+        'warning': 'btn-warning',
+        'danger': 'btn-danger',
+        'success': 'btn-success',
+    },
+}
+
+
 MIDDLEWARE: tuple[str, ...] = (
+    # Whitenoise per servire file STATICFILES_DIRS
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     # Logging:
     'server.settings.components.logging.LoggingContextVarsMiddleware',
     # Content Security Policy:
@@ -64,6 +155,8 @@ MIDDLEWARE: tuple[str, ...] = (
     'axes.middleware.AxesMiddleware',
     # CRUM - Current Request User Middleware:
     'crum.CurrentRequestUserMiddleware',
+    # django-browser-reload
+    'django_browser_reload.middleware.BrowserReloadMiddleware',
 )
 
 ROOT_URLCONF = 'server.urls'
@@ -105,7 +198,7 @@ USE_I18N = True
 
 LANGUAGES = (
     ('en', _('English')),
-    ('ru', _('Russian')),
+    ('it', _('Italian')),
 )
 
 LOCALE_PATHS = ('locale/',)
@@ -118,7 +211,7 @@ TIME_ZONE = 'UTC'
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = '/pareri/static/'
-
+STATICFILES_DIRS = [BASE_DIR / 'server' / 'static']
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -136,6 +229,9 @@ TEMPLATES = [
         'APP_DIRS': True,
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
+            BASE_DIR / 'server' / 'templates',
+            # pagine 404 e 500
+            BASE_DIR / 'server' / 'apps' / 'theme' / 'static_src',
             # Contains plain text templates, like `robots.txt`:
             BASE_DIR.joinpath('server', 'common', 'django', 'templates'),
         ],
@@ -210,3 +306,7 @@ CSRF_TRUSTED_ORIGINS = [
 # https://docs.djangoproject.com/en/5.2/ref/settings/#std:setting-EMAIL_TIMEOUT
 
 EMAIL_TIMEOUT = 5
+
+FULL_ACCESS_GROUP_NAME = config(
+    'FULL_ACCESS_GROUP_NAME', default='Full Access Admin'
+)

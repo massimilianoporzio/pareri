@@ -1,3 +1,11 @@
+"""Test per le funzionalità base del modello BaseModel e DummyModel.
+
+Questo modulo contiene test per la creazione, aggiornamento e gestione
+del modello fittizio DummyModel che eredita da BaseModel.
+"""
+
+# pylint: disable=unused-argument, no-member
+
 import time
 import uuid
 from unittest.mock import patch
@@ -22,6 +30,8 @@ class DummyModel(BaseModel):
     test_field = models.CharField(max_length=50, default='test')
 
     class Meta:
+        """Meta informazioni per DummyModel."""
+
         # FONDAMENTALE: registra questo modello fittizio sotto l'app 'common'
         app_label = 'common'
         # Non è di produzione, non deve essere migrato (gestito da setUpClass)
@@ -144,6 +154,8 @@ class TestBaseModel(TestCase):
         """Test che i campi utente restano None se l'utente è anonimo."""
 
         class AnonymousUser:
+            """Simula un utente anonimo."""
+
             is_anonymous = True
 
         with patch(
