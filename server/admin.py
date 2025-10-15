@@ -9,7 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from server.apps.accounts.admin import CustomUserAdmin
 from server.apps.accounts.models import CustomUser
 from server.apps.main.admin import BlogPostAdmin
-from server.apps.main.models import BlogPost
+from server.apps.main.models import BlogPost, DummyModel
 
 # Definisci la lista delle app autorizzate per gli altri superuser
 AUTHORIZED_APPS = [
@@ -79,6 +79,7 @@ custom_admin_site.register(ContentType)
 custom_admin_site.register(LogEntry)
 
 custom_admin_site.register(BlogPost, BlogPostAdmin)
+custom_admin_site.register(DummyModel)
 try:
     from axes.models import AccessAttempt, AccessFailureLog, AccessLog
     from django.contrib.admin.sites import AlreadyRegistered
