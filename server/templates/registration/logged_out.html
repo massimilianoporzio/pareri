@@ -1,6 +1,7 @@
-{% extends "registration/base.html" %} {% load static i18n jazzmin %} {% block
-extrahead %}
-<link rel="stylesheet" href="{% static 'css/my-style.css' %}" />
+{% extends "registration/base.html" %}
+{% load static i18n jazzmin %}
+{% block extrahead %}
+<link rel="stylesheet" href="{% static 'css/dist/styles.css' %}" />
 {% endblock extrahead %} {% block content %}
 <div class="login-logo text-center my-8">
   {% get_jazzmin_settings request as jazzmin_settings %}
