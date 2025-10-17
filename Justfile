@@ -140,21 +140,5 @@ pre-commit-all:
 generate-django-secret:
     @poetry run python -c "from django.utils.crypto import get_random_string; print(get_random_string(50))"
 
-# Format Markdown files with prettier (requires: pnpm install -g prettier)
 prettier-md:
-    #!/usr/bin/env bash
-    set -euo pipefail
-    if ! command -v pnpm &> /dev/null; then
-        echo "Error: pnpm not found. Install with: brew install pnpm"
-        exit 1
-    fi
-    if ! pnpm list -g prettier &> /dev/null; then
-        echo "Error: prettier not found. Install with: pnpm install -g prettier"
-        exit 1
-    fi
-    files=($(find . -maxdepth 1 -type f -name "*.md") $(find ./docs -type f -name "*.md" 2>/dev/null || true))
-    if [ ${#files[@]} -eq 0 ]; then
-        echo "No markdown files found"
-        exit 0
-    fi
-    pnpm prettier --write "${files[@]}"
+    @pnpm prettier --write $(find . -maxdepth 1 -type f -name "*.md") $(find ./docs -type f -name "*.md")
