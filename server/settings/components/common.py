@@ -37,6 +37,7 @@ THIRD_PARTY_APPS: tuple[str, ...] = (
     'health_check.cache',
     'health_check.storage',
     'jazzmin',
+    'cities_light',  # Django-cities-light for geographic data
     'tailwind',
     'django_browser_reload',
 )
@@ -310,3 +311,27 @@ EMAIL_TIMEOUT = 5
 FULL_ACCESS_GROUP_NAME = config(
     'FULL_ACCESS_GROUP_NAME', default='Full Access Admin'
 )
+
+
+# Django-cities-light configuration
+# https://django-cities-light.readthedocs.io/
+# ============================================================================
+
+# Import only Italian geographic data
+CITIES_LIGHT_TRANSLATION_LANGUAGES = ['it']
+CITIES_LIGHT_INCLUDE_COUNTRIES = ['IT']
+
+# Use cities with 500+ inhabitants for better coverage
+CITIES_LIGHT_CITY_SOURCES = [
+    'http://download.geonames.org/export/dump/cities500.zip',
+]
+
+# Enable geocoding features
+CITIES_LIGHT_ENABLE_GEOCODING = True
+
+# Ignore auto-named migrations from third party apps
+# (for django-test-migrations)
+DTM_IGNORED_MIGRATIONS = [
+    ('cities_light', '0003_auto_20141120_0342'),
+    ('cities_light', '0010_auto_20200508_1851'),
+]

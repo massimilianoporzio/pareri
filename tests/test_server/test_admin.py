@@ -31,6 +31,15 @@ _RESTRICTED_ADMIN_ADD_MODELS = frozenset([
     AccessFailureLog,
 ])
 
+# Models from cities_light that are NOT registered in custom_admin_site
+# (we use proxy models instead: CityProxy, RegionProxy, CountryProxy)
+_CITIES_LIGHT_UNREGISTERED_MODELS = frozenset([
+    'city',  # cities_light.City (usiamo CityProxy)
+    'region',  # cities_light.Region (usiamo RegionProxy)
+    'country',  # cities_light.Country (usiamo CountryProxy)
+    'subregion',  # cities_light.SubRegion (non registrato)
+])
+
 # pylint: disable=protected-access
 _MODEL_ADMIN_PARAMS = tuple(
     (site, model, model_admin)
@@ -55,6 +64,7 @@ def _make_url(site: AdminSite, model: type[Model], page: str) -> str:
         (site, model)
         for site in all_sites
         for model, _ in site._registry.items()
+        if model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
     ],
 )
 def test_admin_changelist(
@@ -76,6 +86,7 @@ def test_admin_changelist(
         (site, model)
         for site in all_sites
         for model, _ in site._registry.items()
+        if model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
     ],
 )
 def test_admin_add(
@@ -425,3 +436,95 @@ def test_dummy_admin_formfield_for_manytomany_else():
     request = HttpRequest()
     result = admin_instance.formfield_for_manytomany(db_field, request)
     assert result is not None
+
+
+@pytest.mark.django_db
+def test_region_filter_lookups():
+    """Tests RegionFilter.lookups() returns all regions."""
+    from django.http import HttpRequest
+
+    from server.admin import CityProxyAdmin, RegionFilter
+    from server.apps.main.models import CityProxy, CountryProxy, RegionProxy
+
+    # Create test data
+    country = CountryProxy.objects.create(
+        name='TestCountry', code2='TC', code3='TST', slug='testcountry-lookup'
+    )
+    RegionProxy.objects.create(
+        name='Test Region', country=country, slug='testregion-lookup'
+    )
+
+    request = HttpRequest()
+    city_admin = CityProxyAdmin(CityProxy, admin.site)
+    region_filter = RegionFilter(request, {}, CityProxy, city_admin)
+
+    lookups = region_filter.lookups(request, city_admin)
+    assert len(lookups) > 0
+    assert any(r[1] == 'Test Region' for r in lookups)
+
+
+@pytest.mark.django_db
+def test_region_filter_queryset_with_value():
+    """Tests RegionFilter.queryset() filters by region when value is set."""
+    from django.http import HttpRequest
+
+    from server.admin import CityProxyAdmin, RegionFilter
+    from server.apps.main.models import CityProxy, CountryProxy, RegionProxy
+
+    # Create test data with unique names to avoid slug collision
+    country = CountryProxy.objects.create(
+        name='TestCountry', code2='TC', code3='TST', slug='testcountry'
+    )
+    region1 = RegionProxy.objects.create(
+        name='TestRegion1', country=country, slug='testregion1'
+    )
+    region2 = RegionProxy.objects.create(
+        name='TestRegion2', country=country, slug='testregion2'
+    )
+    CityProxy.objects.create(
+        name='Milano', region=region1, country=country, slug='milano-tr1'
+    )
+    CityProxy.objects.create(
+        name='Roma', region=region2, country=country, slug='roma-tr2'
+    )
+
+    request = HttpRequest()
+    city_admin = CityProxyAdmin(CityProxy, admin.site)
+
+    # Test filter with region1
+    region_filter = RegionFilter(
+        request, {'region': str(region1.id)}, CityProxy, city_admin
+    )
+    filtered_qs = region_filter.queryset(request, CityProxy.objects.all())
+
+    assert filtered_qs.count() == 1
+    assert filtered_qs.first().name == 'Milano'
+
+
+@pytest.mark.django_db
+def test_region_filter_queryset_without_value():
+    """Tests RegionFilter.queryset() returns all when no value is set."""
+    from django.http import HttpRequest
+
+    from server.admin import CityProxyAdmin, RegionFilter
+    from server.apps.main.models import CityProxy, CountryProxy, RegionProxy
+
+    # Create test data with unique names
+    country = CountryProxy.objects.create(
+        name='TestCountry2', code2='T2', code3='TS2', slug='testcountry2'
+    )
+    region = RegionProxy.objects.create(
+        name='TestRegion3', country=country, slug='testregion3'
+    )
+    CityProxy.objects.create(
+        name='Milano', region=region, country=country, slug='milano-tr3'
+    )
+
+    request = HttpRequest()
+    city_admin = CityProxyAdmin(CityProxy, admin.site)
+
+    # Test filter without value
+    region_filter = RegionFilter(request, {}, CityProxy, city_admin)
+    filtered_qs = region_filter.queryset(request, CityProxy.objects.all())
+
+    assert filtered_qs.count() == CityProxy.objects.count()

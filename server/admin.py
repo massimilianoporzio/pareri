@@ -9,7 +9,13 @@ from django.contrib.contenttypes.models import ContentType
 from server.apps.accounts.admin import CustomUserAdmin
 from server.apps.accounts.models import CustomUser
 from server.apps.main.admin import BlogPostAdmin
-from server.apps.main.models import BlogPost, DummyModel
+from server.apps.main.models import (
+    BlogPost,
+    CityProxy,
+    CountryProxy,
+    DummyModel,
+    RegionProxy,
+)
 
 # Definisci la lista delle app autorizzate per gli altri superuser
 AUTHORIZED_APPS = [
@@ -80,6 +86,72 @@ custom_admin_site.register(LogEntry)
 
 custom_admin_site.register(BlogPost, BlogPostAdmin)
 custom_admin_site.register(DummyModel)
+
+
+# ============================================================================
+# Django-cities-light Proxy Models Registration
+# ============================================================================
+
+
+class RegionFilter(admin.SimpleListFilter):
+    """Filtro personalizzato per Regione con label italiano."""
+
+    title = 'Regione'  # Label che appare nell'interfaccia admin
+    parameter_name = 'region'
+
+    def lookups(self, request, model_admin):
+        """Restituisce la lista delle regioni disponibili."""
+        regions = RegionProxy.objects.all().order_by('name')
+        return [(region.id, region.name) for region in regions]
+
+    def queryset(self, request, queryset):
+        """Filtra il queryset in base alla regione selezionata."""
+        if self.value():
+            return queryset.filter(region_id=self.value())
+        return queryset
+
+
+class CityProxyAdmin(admin.ModelAdmin):
+    """Admin per le città italiane."""
+
+    list_display = ('name', 'region', 'country')
+    list_filter = (RegionFilter,)  # Usa il filtro personalizzato
+    search_fields = ('name', 'alternate_names')
+    ordering = ('name',)
+
+    def get_queryset(self, request):
+        """Ottimizza la queryset con select_related per evitare N+1."""
+        return super().get_queryset(request).select_related('region', 'country')
+
+
+class RegionProxyAdmin(admin.ModelAdmin):
+    """Admin per le regioni italiane."""
+
+    list_display = ('name', 'country')
+    search_fields = ('name', 'alternate_names')
+    ordering = ('name',)
+
+    def get_queryset(self, request):
+        """Ottimizza la queryset con select_related per evitare N+1."""
+        return super().get_queryset(request).select_related('country')
+
+
+class CountryProxyAdmin(admin.ModelAdmin):
+    """Admin per i paesi (Italia)."""
+
+    list_display = ('name', 'code2', 'code3')
+    search_fields = ('name', 'code2', 'code3')
+
+
+custom_admin_site.register(CityProxy, CityProxyAdmin)
+custom_admin_site.register(RegionProxy, RegionProxyAdmin)
+custom_admin_site.register(CountryProxy, CountryProxyAdmin)
+
+
+# ============================================================================
+# Django Axes - Access Control
+# ============================================================================
+
 try:
     from axes.models import AccessAttempt, AccessFailureLog, AccessLog
     from django.contrib.admin.sites import AlreadyRegistered

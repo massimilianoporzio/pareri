@@ -45,3 +45,40 @@ class DummyModel(models.Model):
     def __str__(self):
         """Rappresentazione stringa del DummyModel."""
         return self.name
+
+
+# ============================================================================
+# Proxy Models for django-cities-light with Italian names
+# ============================================================================
+
+from cities_light.models import City, Country, Region  # noqa: E402
+
+
+class CityProxy(City):
+    """Proxy model for City with Italian verbose names."""
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Città'
+        verbose_name_plural = 'Città'
+        app_label = 'cities_light'
+
+
+class RegionProxy(Region):
+    """Proxy model for Region with Italian verbose names."""
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Regione/Provincia'
+        verbose_name_plural = 'Regioni/Province'
+        app_label = 'cities_light'
+
+
+class CountryProxy(Country):
+    """Proxy model for Country with Italian verbose names."""
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Nazione'
+        verbose_name_plural = 'Nazioni'
+        app_label = 'cities_light'
