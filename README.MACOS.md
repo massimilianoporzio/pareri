@@ -125,24 +125,29 @@ just db-drop NOME_DB
 ## Differenze tra Windows e macOS
 
 ### Shell
+
 - **Windows**: PowerShell con sintassi `$variable`, `Write-Host`
 - **macOS/Linux**: Bash/Zsh con sintassi `$variable`, `echo`
 
 ### PostgreSQL
+
 - **Windows**: Solitamente in `C:\Program Files\PostgreSQL\XX\bin\`
 - **macOS**: Installato via Homebrew in `/opt/homebrew/bin/` o `/usr/local/bin/`
 
 ### Path separators
+
 - **Windows**: `\` (backslash)
 - **macOS/Linux**: `/` (forward slash)
 
 ### Utente PostgreSQL di default
+
 - **Windows**: Solitamente `postgres`
 - **macOS**: L'utente corrente del sistema (ottenibile con `whoami`)
 
 ## Troubleshooting
 
 ### Poetry non trova Python 3.12
+
 ```bash
 # Verificare dove si trova Python 3.12
 which python3.12
@@ -152,6 +157,7 @@ poetry env use /opt/homebrew/bin/python3.12
 ```
 
 ### PostgreSQL non si connette
+
 ```bash
 # Verificare che PostgreSQL sia in esecuzione
 brew services list | grep postgresql
@@ -164,6 +170,7 @@ psql -U $(whoami) -d postgres -c "SELECT version();"
 ```
 
 ### Errore di permessi sul database
+
 ```bash
 # Ricreare l'utente con i permessi corretti
 psql -U $(whoami) -d postgres -c "DROP USER IF EXISTS pareri;"
