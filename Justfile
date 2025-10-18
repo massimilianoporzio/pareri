@@ -28,6 +28,7 @@ menu:
     @echo "🧪 Testing"
     @echo "  ▶ test     — Run tests (just test)"
     @echo "  ▶ coverage — Generate coverage report (just coverage)"
+    @echo "  ▶ act-test — Run GitHub Actions test workflow locally (just act-test)"
     @echo ""
     @echo "🧹 Linting & Formatting"
     @echo "  ▶ lint   — Run ruff linter (just lint)"
@@ -142,3 +143,6 @@ generate-django-secret:
 
 prettier-md:
     @pnpm prettier --write $(find . -maxdepth 1 -type f -name "*.md") $(find ./docs -type f -name "*.md")
+
+act-test:
+     @act -j test --secret-file .secrets
