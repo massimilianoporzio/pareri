@@ -11,11 +11,13 @@ import server.apps.datoriLavoro.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('cities_light', '0013_cityproxy_countryproxy_regionproxy'),
+        # Depend on a known existing cities_light migration to ensure base tables
+        # are present during tests and in CI. The previously referenced '0013_cityproxy_countryproxy_regionproxy'
+        # does not exist in the installed package version on CI, causing a NodeNotFoundError.
+        ('cities_light', '0010_auto_20200508_1851'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -23,18 +25,98 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DatoreLavoro',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='id')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('created_by_fullname', models.CharField(blank=True, max_length=150)),
-                ('updated_by_fullname', models.CharField(blank=True, max_length=150)),
-                ('version', concurrency.fields.IntegerVersionField(default=0, help_text='record revision number')),
-                ('is_active', models.BooleanField(default=True, verbose_name='ancora attivo')),
-                ('ragione_sociale', models.CharField(blank=True, max_length=255, verbose_name='Ragione Sociale')),
-                ('p_iva', models.CharField(blank=True, max_length=11, validators=[server.apps.datoriLavoro.models.validate_p_iva_italiana], verbose_name='Partita IVA')),
-                ('codice_fiscale', models.CharField(blank=True, max_length=16, validators=[server.apps.datoriLavoro.models.validate_codice_fiscale], verbose_name='Codice Fiscale')),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_%(class)s_set', to=settings.AUTH_USER_MODEL)),
-                ('updated_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='updated_%(class)s_set', to=settings.AUTH_USER_MODEL)),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='id',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='created at'
+                    ),
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(
+                        auto_now=True, verbose_name='updated at'
+                    ),
+                ),
+                (
+                    'created_by_fullname',
+                    models.CharField(blank=True, max_length=150),
+                ),
+                (
+                    'updated_by_fullname',
+                    models.CharField(blank=True, max_length=150),
+                ),
+                (
+                    'version',
+                    concurrency.fields.IntegerVersionField(
+                        default=0, help_text='record revision number'
+                    ),
+                ),
+                (
+                    'is_active',
+                    models.BooleanField(
+                        default=True, verbose_name='ancora attivo'
+                    ),
+                ),
+                (
+                    'ragione_sociale',
+                    models.CharField(
+                        blank=True,
+                        max_length=255,
+                        verbose_name='Ragione Sociale',
+                    ),
+                ),
+                (
+                    'p_iva',
+                    models.CharField(
+                        blank=True,
+                        max_length=11,
+                        validators=[
+                            server.apps.datoriLavoro.models.validate_p_iva_italiana
+                        ],
+                        verbose_name='Partita IVA',
+                    ),
+                ),
+                (
+                    'codice_fiscale',
+                    models.CharField(
+                        blank=True,
+                        max_length=16,
+                        validators=[
+                            server.apps.datoriLavoro.models.validate_codice_fiscale
+                        ],
+                        verbose_name='Codice Fiscale',
+                    ),
+                ),
+                (
+                    'created_by',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='created_%(class)s_set',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    'updated_by',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='updated_%(class)s_set',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Datore di Lavoro',
@@ -44,18 +126,81 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Sede',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='id')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('created_by_fullname', models.CharField(blank=True, max_length=150)),
-                ('updated_by_fullname', models.CharField(blank=True, max_length=150)),
-                ('version', concurrency.fields.IntegerVersionField(default=0, help_text='record revision number')),
-                ('is_active', models.BooleanField(default=True, verbose_name='ancora attivo')),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='id',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='created at'
+                    ),
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(
+                        auto_now=True, verbose_name='updated at'
+                    ),
+                ),
+                (
+                    'created_by_fullname',
+                    models.CharField(blank=True, max_length=150),
+                ),
+                (
+                    'updated_by_fullname',
+                    models.CharField(blank=True, max_length=150),
+                ),
+                (
+                    'version',
+                    concurrency.fields.IntegerVersionField(
+                        default=0, help_text='record revision number'
+                    ),
+                ),
+                (
+                    'is_active',
+                    models.BooleanField(
+                        default=True, verbose_name='ancora attivo'
+                    ),
+                ),
                 ('nome', models.CharField(default='---', max_length=100)),
-                ('indirizzo', models.CharField(blank=True, default='', max_length=255)),
-                ('citta', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='cities_light.cityproxy', verbose_name='Città')),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_%(class)s_set', to=settings.AUTH_USER_MODEL)),
-                ('updated_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='updated_%(class)s_set', to=settings.AUTH_USER_MODEL)),
+                (
+                    'indirizzo',
+                    models.CharField(blank=True, default='', max_length=255),
+                ),
+                (
+                    'citta',
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        to='cities_light.cityproxy',
+                        verbose_name='Città',
+                    ),
+                ),
+                (
+                    'created_by',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='created_%(class)s_set',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    'updated_by',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='updated_%(class)s_set',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Sede',
@@ -65,18 +210,92 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='DatoreLavoroSede',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, verbose_name='id')),
-                ('created_at', models.DateTimeField(auto_now_add=True, verbose_name='created at')),
-                ('updated_at', models.DateTimeField(auto_now=True, verbose_name='updated at')),
-                ('created_by_fullname', models.CharField(blank=True, max_length=150)),
-                ('updated_by_fullname', models.CharField(blank=True, max_length=150)),
-                ('version', concurrency.fields.IntegerVersionField(default=0, help_text='record revision number')),
-                ('is_active', models.BooleanField(default=True, verbose_name='ancora attivo')),
-                ('is_sede_legale', models.BooleanField(default=False, verbose_name='Sede Legale?')),
-                ('created_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='created_%(class)s_set', to=settings.AUTH_USER_MODEL)),
-                ('datore_lavoro', models.ForeignKey(blank=True, db_index=False, null=True, on_delete=django.db.models.deletion.CASCADE, to='datoriLavoro.datorelavoro')),
-                ('updated_by', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='updated_%(class)s_set', to=settings.AUTH_USER_MODEL)),
-                ('sede', models.ForeignKey(db_index=False, on_delete=django.db.models.deletion.CASCADE, to='datoriLavoro.sede')),
+                (
+                    'id',
+                    models.UUIDField(
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name='id',
+                    ),
+                ),
+                (
+                    'created_at',
+                    models.DateTimeField(
+                        auto_now_add=True, verbose_name='created at'
+                    ),
+                ),
+                (
+                    'updated_at',
+                    models.DateTimeField(
+                        auto_now=True, verbose_name='updated at'
+                    ),
+                ),
+                (
+                    'created_by_fullname',
+                    models.CharField(blank=True, max_length=150),
+                ),
+                (
+                    'updated_by_fullname',
+                    models.CharField(blank=True, max_length=150),
+                ),
+                (
+                    'version',
+                    concurrency.fields.IntegerVersionField(
+                        default=0, help_text='record revision number'
+                    ),
+                ),
+                (
+                    'is_active',
+                    models.BooleanField(
+                        default=True, verbose_name='ancora attivo'
+                    ),
+                ),
+                (
+                    'is_sede_legale',
+                    models.BooleanField(
+                        default=False, verbose_name='Sede Legale?'
+                    ),
+                ),
+                (
+                    'created_by',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='created_%(class)s_set',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    'datore_lavoro',
+                    models.ForeignKey(
+                        blank=True,
+                        db_index=False,
+                        null=True,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='datoriLavoro.datorelavoro',
+                    ),
+                ),
+                (
+                    'updated_by',
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name='updated_%(class)s_set',
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    'sede',
+                    models.ForeignKey(
+                        db_index=False,
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to='datoriLavoro.sede',
+                    ),
+                ),
             ],
             options={
                 'verbose_name': 'Sede associata',
@@ -86,14 +305,25 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='datorelavoro',
             name='sedi',
-            field=models.ManyToManyField(related_name='datori_lavoro', through='datoriLavoro.DatoreLavoroSede', to='datoriLavoro.sede', verbose_name='Sedi'),
+            field=models.ManyToManyField(
+                related_name='datori_lavoro',
+                through='datoriLavoro.DatoreLavoroSede',
+                to='datoriLavoro.sede',
+                verbose_name='Sedi',
+            ),
         ),
         migrations.AddConstraint(
             model_name='datorelavorosede',
-            constraint=models.UniqueConstraint(condition=models.Q(('is_sede_legale', True)), fields=('sede', 'is_sede_legale'), name='unique_legal_office_for_each_sede'),
+            constraint=models.UniqueConstraint(
+                condition=models.Q(('is_sede_legale', True)),
+                fields=('sede', 'is_sede_legale'),
+                name='unique_legal_office_for_each_sede',
+            ),
         ),
         migrations.AddConstraint(
             model_name='datorelavorosede',
-            constraint=models.UniqueConstraint(fields=('datore_lavoro', 'sede'), name='unique_datore_sede'),
+            constraint=models.UniqueConstraint(
+                fields=('datore_lavoro', 'sede'), name='unique_datore_sede'
+            ),
         ),
     ]
