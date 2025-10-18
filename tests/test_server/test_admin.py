@@ -19,10 +19,10 @@ from django.http import HttpRequest
 from django.test import Client, RequestFactory
 from django.urls import reverse
 
-import server.admin as admin_mod
 from server.admin import CustomAdminSite
 from server.apps.accounts.admin import CustomUserAdmin
 from server.apps.accounts.models import CustomUser
+from server.settings.components.common import AUTHORIZED_APPS
 
 # Models that should have restricted (FORBIDDEN) admin add pages
 _RESTRICTED_ADMIN_ADD_MODELS = frozenset([
@@ -226,11 +226,9 @@ def test_custom_admin_get_app_list_limited(monkeypatch, db):
     monkeypatch.setattr(user.groups, 'filter', lambda name: [])
     app_list = site.get_app_list(request)
     # Il ramo else deve essere triggerato: solo app autorizzate
-    assert all(
-        app['app_label'] in admin_mod.AUTHORIZED_APPS for app in app_list
-    )
+    assert all(app['app_label'] in AUTHORIZED_APPS for app in app_list)
     assert isinstance(app_list, list)
-    assert len(app_list) <= len(admin_mod.AUTHORIZED_APPS)
+    assert len(app_list) <= len(AUTHORIZED_APPS)
 
 
 def test_custom_admin_get_app_list_branches(monkeypatch, db):
@@ -251,11 +249,9 @@ def test_custom_admin_get_app_list_branches(monkeypatch, db):
     site = CustomAdminSite(name='custom_admin')
     monkeypatch.setattr(user_super.groups, 'filter', lambda name: [])
     app_list_super = site.get_app_list(request_super)
-    assert all(
-        app['app_label'] in admin_mod.AUTHORIZED_APPS for app in app_list_super
-    )
+    assert all(app['app_label'] in AUTHORIZED_APPS for app in app_list_super)
     assert isinstance(app_list_super, list)
-    assert len(app_list_super) <= len(admin_mod.AUTHORIZED_APPS)
+    assert len(app_list_super) <= len(AUTHORIZED_APPS)
     # Utente non superuser
     user_normal = CustomUser.objects.create_user(
         email='normal@aslcn1.it', password='pass'
@@ -264,11 +260,9 @@ def test_custom_admin_get_app_list_branches(monkeypatch, db):
     request_normal.user = user_normal
     monkeypatch.setattr(user_normal.groups, 'filter', lambda name: [])
     app_list_normal = site.get_app_list(request_normal)
-    assert all(
-        app['app_label'] in admin_mod.AUTHORIZED_APPS for app in app_list_normal
-    )
+    assert all(app['app_label'] in AUTHORIZED_APPS for app in app_list_normal)
     assert isinstance(app_list_normal, list)
-    assert len(app_list_normal) <= len(admin_mod.AUTHORIZED_APPS)
+    assert len(app_list_normal) <= len(AUTHORIZED_APPS)
 
 
 def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
@@ -302,7 +296,7 @@ def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
     # Patch admin.AdminSite.get_app_list to return a non-empty list
     fake_app_list = [
         {
-            'app_label': admin_mod.AUTHORIZED_APPS[0],
+            'app_label': AUTHORIZED_APPS[0],
             'name': 'Pareri',
             'models': [],
         }
@@ -313,31 +307,30 @@ def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
 
     # Call the real method to trigger the filtering branch
     app_list = site.get_app_list(request)
-    assert all(
-        app['app_label'] in admin_mod.AUTHORIZED_APPS for app in app_list
-    )
+    assert all(app['app_label'] in AUTHORIZED_APPS for app in app_list)
     assert isinstance(app_list, list)
-    assert len(app_list) <= len(admin_mod.AUTHORIZED_APPS)
+    assert len(app_list) <= len(AUTHORIZED_APPS)
 
 
 def test_admin_axes_importerror(monkeypatch):
+    import server.admin as admin_mod
+
     """Testa che il ramo except ImportError venga coperto.
 
     se axes non è disponibile.
     """
-    import server.admin as admin_mod
-
     monkeypatch.setitem(sys.modules, 'axes.models', None)
     with contextlib.suppress(Exception):
         admin_mod.__dict__['custom_admin_site'].register(object)
 
 
 def test_admin_axes_already_registered(monkeypatch):
+    import server.admin as admin_mod
+
     """Coprire il branch AlreadyRegistered.
 
     nel for di registrazione admin axes.
     """
-    import server.admin as admin_mod
 
     class DummyModel:
         """Modello dummy per testare la registrazione admin."""
@@ -351,6 +344,19 @@ def test_admin_axes_already_registered(monkeypatch):
     )
     with contextlib.suppress(admin.sites.AlreadyRegistered):
         admin_mod.custom_admin_site.register(DummyModel)
+
+
+def test_forbidden_add_admin_returns_403():
+    """Covers ForbiddenAddAdmin.add_view returning 403."""
+    from django.http import HttpRequest
+
+    from server.admin import ForbiddenAddAdmin
+    from server.apps.main.models import DummyModel
+
+    request = HttpRequest()
+    admin_instance = ForbiddenAddAdmin(DummyModel, admin.site)
+    response = admin_instance.add_view(request)
+    assert getattr(response, 'status_code', None) == 403
 
 
 # --- Coverage for development.py OSError branch ---
@@ -381,6 +387,8 @@ def test_internal_ips_oserror(monkeypatch):
 
 
 def test_admin_axes_importerror_branch(monkeypatch):
+    import server.admin as admin_mod
+
     """
     Coprire il branch except ImportError in admin.py.
 
@@ -391,7 +399,6 @@ def test_admin_axes_importerror_branch(monkeypatch):
 
     sys.modules['axes.models'] = None
     # Ricarica il modulo admin per forzare l'ImportError
-    import server.admin as admin_mod
 
     importlib.reload(admin_mod)
 
@@ -528,3 +535,68 @@ def test_region_filter_queryset_without_value():
     filtered_qs = region_filter.queryset(request, CityProxy.objects.all())
 
     assert filtered_qs.count() == CityProxy.objects.count()
+
+
+@pytest.mark.django_db
+def test_region_filter_queryset_invalid_value():
+    """Tests RegionFilter.queryset() with invalid non-numeric value."""
+    from django.http import HttpRequest
+
+    from server.admin import CityProxyAdmin, RegionFilter
+    from server.apps.main.models import CityProxy, CountryProxy, RegionProxy
+
+    # Create test data
+    country = CountryProxy.objects.create(
+        name='BadCountry', code2='BC', code3='BCC', slug='badcountry'
+    )
+    region = RegionProxy.objects.create(
+        name='BadRegion', country=country, slug='badregion'
+    )
+    CityProxy.objects.create(
+        name='BadCity', region=region, country=country, slug='badcity'
+    )
+
+    request = HttpRequest()
+    city_admin = CityProxyAdmin(CityProxy, admin.site)
+
+    # Pass an invalid non-numeric value to trigger the except ValueError branch
+    region_filter = RegionFilter(
+        request, {'region': 'abc'}, CityProxy, city_admin
+    )
+    filtered_qs = region_filter.queryset(request, CityProxy.objects.all())
+
+    # Should return the unfiltered queryset
+    assert filtered_qs.count() == CityProxy.objects.count()
+
+
+@pytest.mark.django_db
+def test_cities_admin_get_querysets():
+    """Covers get_queryset methods of CityProxyAdmin and RegionProxyAdmin."""
+    from django.contrib import admin as dj_admin
+    from django.http import HttpRequest
+
+    from server.admin import CityProxyAdmin, RegionProxyAdmin
+    from server.apps.main.models import CityProxy, CountryProxy, RegionProxy
+
+    # Create test data
+    country = CountryProxy.objects.create(
+        name='QCountry', code2='QC', code3='QCC', slug='qcountry'
+    )
+    region = RegionProxy.objects.create(
+        name='QRegion', country=country, slug='qregion'
+    )
+    CityProxy.objects.create(
+        name='QCity', region=region, country=country, slug='qcity'
+    )
+
+    # Instantiate admins
+    city_admin = CityProxyAdmin(CityProxy, dj_admin.site)
+    region_admin = RegionProxyAdmin(RegionProxy, dj_admin.site)
+
+    # Call get_queryset to ensure coverage
+    city_qs = city_admin.get_queryset(HttpRequest())
+    region_qs = region_admin.get_queryset(HttpRequest())
+
+    # Force evaluation
+    list(city_qs)
+    list(region_qs)

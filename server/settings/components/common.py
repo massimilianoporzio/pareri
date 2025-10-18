@@ -84,22 +84,38 @@ JAZZMIN_SETTINGS = {
     # Whether to link font from google (use custom_css to supply font otherwise)
     'use_google_fonts_cdn': True,
     # Whether to show the UI customizer on the sidebar
-    'show_ui_builder': True,
+    'show_ui_builder': False,
     # abilita traduzione in jazzmin
     'i18n_enabled': True,
+    # Enable related object modal instead of full page
+    'related_modal_active': True,
+    # Make the modal small as requested
+    'related_modal_classes': 'modal-dialog modal-sm',
     # icons for apps:
     'icons': {
-        'cities_light.cityProxy': 'fas fa-city',
-        'cities_light.countryProxy': 'fas fa-earth-europe',
-        'cities_light.regionProxy': 'fas fa-map-marker-alt',
-        'pareri.tipoOrigine': 'fas fa-building-columns',
-        'pareri.espertoRadioprotezione': 'fas fa-radiation',
-        'pareri.tipoPratica': 'fas fa-file-invoice',
-        'pareri.tipoProcesso': 'fas fa-gear',
-        'accounts.customuser': 'fas fa-user',
+        # Cities-light proxy models (app_label = cities_light)
+        'cities_light.CityProxy': 'fas fa-city',
+        # Nazioni (CountryProxy) - use FA5 icon
+        'cities_light.CountryProxy': 'fas fa-globe-europe',
+        'cities_light.RegionProxy': 'fas fa-map-marker-alt',
+        # Pareri app models (TODO: verificare app_label corretto)
+        'pareri.TipoOrigine': 'fas fa-building-columns',
+        'pareri.EspertoRadioprotezione': 'fas fa-radiation',
+        'pareri.TipoPratica': 'fas fa-file-invoice',
+        'pareri.TipoProcesso': 'fas fa-gear',
+        # Accounts app
+        'accounts.CustomUser': 'fas fa-user',
+        # Auth app
         'auth.Group': 'fas fa-users',
-        'datoriLavoro.sede': 'fas fa-location-dot',
-        'datoriLavoro.datoreLavoro': 'fas fa-user-tie',
+        'auth.Permission': 'fas fa-key',
+        'axes.AccessAttempt': 'fas fa-sign-in-alt',
+        'axes.AccessLog': 'fas fa-edit',
+        'axes.AccessFailureLog': 'fas fa-ban',
+        # Admin app (voci di Log)
+        'admin.LogEntry': 'fas fa-history',
+        # DatoriLavoro app (use FA5-compatible icon)
+        'datoriLavoro.Sede': 'fas fa-map-marker-alt',
+        'datoriLavoro.DatoreLavoro': 'fas fa-user-tie',
     },
     'show_logout': False,
 }
@@ -312,6 +328,25 @@ EMAIL_TIMEOUT = 5
 FULL_ACCESS_GROUP_NAME = config(
     'FULL_ACCESS_GROUP_NAME', default='Full Access Admin'
 )
+
+# Name for the limited admin group (staff with CRUD on selected apps)
+REGULAR_ADMIN_GROUP_NAME = config(
+    'REGULAR_ADMIN_GROUP_NAME', default='Regular Admin'
+)
+
+# Admin visibility control: app labels visible to restricted users.
+# Configure via .env as a comma-separated list.
+# Example env value: "ADMIN_AUTHORIZED_APPS=pareri,datoriLavoro".
+# Notes:
+# - Values must match each app's app_label (usually the last module path
+#   segment or AppConfig.label).
+# - Users outside FULL_ACCESS_GROUP_NAME will only see apps listed here.
+_ADMIN_AUTHORIZED_APPS = config(
+    'ADMIN_AUTHORIZED_APPS', default='pareri,datoriLavoro'
+)
+AUTHORIZED_APPS: list[str] = [
+    app.strip() for app in _ADMIN_AUTHORIZED_APPS.split(',') if app.strip()
+]
 
 
 # Django-cities-light configuration

@@ -82,15 +82,6 @@ class DatoreLavoroSedeInline(admin.TabularInline):
         """Ottimizza il queryset per evitare N+1 e attiva il popup Jazzmin."""
         if db_field.name == 'sede':
             kwargs['queryset'] = Sede.objects.select_related('citta').all()
-            kwargs['widget'] = admin.widgets.RelatedFieldWidgetWrapper(
-                kwargs.get('widget') or db_field.formfield().widget,
-                db_field.remote_field,
-                custom_admin_site,
-                can_add_related=True,
-                can_change_related=True,
-                can_delete_related=True,
-                can_view_related=True,
-            )
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 

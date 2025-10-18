@@ -1,6 +1,7 @@
-from datoriLavoro.models import DatoreLavoro
 from django import forms
 from django.utils.translation import gettext_lazy as _
+
+from server.apps.datoriLavoro.models import DatoreLavoro
 
 
 class DatoreLavoroForm(forms.ModelForm):
@@ -8,16 +9,7 @@ class DatoreLavoroForm(forms.ModelForm):
 
     class Meta:
         model = DatoreLavoro
-        fields = '__all__'
-
-    def clean_sedi(self):
-        """Assicura che almeno una sede sia associata al datore di lavoro."""
-        sedi = self.cleaned_data.get('sedi')
-        if not sedi:
-            raise forms.ValidationError(
-                _('Devi associare almeno una sede a questo datore di lavoro.')
-            )
-        return sedi
+        exclude = ('sedi',)  # Escludi M2M con through
 
     def clean(self):
         """Validazione personalizzata per DatoreLavoro."""
