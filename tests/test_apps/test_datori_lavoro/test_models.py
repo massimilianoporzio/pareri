@@ -10,13 +10,12 @@ from server.apps.datoriLavoro.models import (
     validate_codice_fiscale,
     validate_p_iva_italiana,
 )
+from server.apps.main.models import CityProxy
 
 
 @pytest.fixture
 def city():
     """Fixture per creare una città di test."""
-    from server.apps.main.models import CityProxy
-
     city = CityProxy.objects.first()
     if not city:
         pytest.skip('Nessuna città disponibile nel database')
