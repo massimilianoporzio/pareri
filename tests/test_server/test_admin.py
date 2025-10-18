@@ -487,10 +487,18 @@ def test_region_filter_queryset_with_value():
         name='TestRegion2', country=country, slug='testregion2'
     )
     CityProxy.objects.create(
-        name='Milano', region=region1, country=country, slug='milano-tr1'
+        name='Milano',
+        region=region1,
+        country=country,
+        slug='milano-tr1',
+        display_name='Milano',
     )
     CityProxy.objects.create(
-        name='Roma', region=region2, country=country, slug='roma-tr2'
+        name='Roma',
+        region=region2,
+        country=country,
+        slug='roma-tr2',
+        display_name='Roma',
     )
 
     request = HttpRequest()
@@ -522,7 +530,11 @@ def test_region_filter_queryset_without_value():
         name='TestRegion3', country=country, slug='testregion3'
     )
     CityProxy.objects.create(
-        name='Milano', region=region, country=country, slug='milano-tr3'
+        name='Milano',
+        region=region,
+        country=country,
+        slug='milano-tr3',
+        display_name='Milano',
     )
 
     request = HttpRequest()
@@ -551,7 +563,11 @@ def test_region_filter_queryset_invalid_value():
         name='BadRegion', country=country, slug='badregion'
     )
     CityProxy.objects.create(
-        name='BadCity', region=region, country=country, slug='badcity'
+        name='BadCity',
+        region=region,
+        country=country,
+        slug='badcity',
+        display_name='BadCity',
     )
 
     request = HttpRequest()
@@ -583,7 +599,11 @@ def test_cities_admin_get_querysets():
         name='QRegion', country=country, slug='qregion'
     )
     CityProxy.objects.create(
-        name='QCity', region=region, country=country, slug='qcity'
+        name='QCity',
+        region=region,
+        country=country,
+        slug='qcity',
+        display_name='QCity',
     )
 
     # Instantiate admins
