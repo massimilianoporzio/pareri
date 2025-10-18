@@ -19,7 +19,7 @@ def test_setup_regular_admin_prints_assigned_users(capfd):
     call_command(
         'setup_regular_admin',
         '--apps',
-        ','.join(AUTHORIZED_APPS),
+        *AUTHORIZED_APPS,
         '--assign-users',
         email,
     )
@@ -39,7 +39,7 @@ def test_setup_regular_admin_user_not_found(capfd):
     call_command(
         'setup_regular_admin',
         '--apps',
-        ','.join(AUTHORIZED_APPS),
+        *AUTHORIZED_APPS,
         '--assign-users',
         'missing@aslcn1.it',
     )
@@ -55,7 +55,7 @@ def test_setup_regular_admin_dry_run_with_valid_input(capfd):
     call_command(
         'setup_regular_admin',
         '--apps',
-        ','.join(AUTHORIZED_APPS),
+        *AUTHORIZED_APPS,
         '--assign-users',
         email,
         '--dry-run',
@@ -74,7 +74,7 @@ def test_setup_regular_admin_group_already_exists():
     call_command(
         'setup_regular_admin',
         '--apps',
-        ','.join(AUTHORIZED_APPS),
+        *AUTHORIZED_APPS,
         '--assign-users',
         email,
     )
@@ -91,7 +91,7 @@ def test_setup_regular_admin_creates_group_and_assigns_user():
     call_command(
         'setup_regular_admin',
         '--apps',
-        ','.join(AUTHORIZED_APPS),
+        *AUTHORIZED_APPS,
         '--assign-users',
         email,
     )
@@ -109,7 +109,7 @@ def test_setup_regular_admin_dry_run_does_not_create():
     call_command(
         'setup_regular_admin',
         '--apps',
-        ','.join(AUTHORIZED_APPS),
+        *AUTHORIZED_APPS,
         '--assign-users',
         email,
         '--dry-run',
@@ -119,7 +119,7 @@ def test_setup_regular_admin_dry_run_does_not_create():
 
 def test_setup_regular_admin_handles_no_users():
     """Test: nessun utente assegnato al gruppo se non specificato."""
-    call_command('setup_regular_admin', '--apps', ','.join(AUTHORIZED_APPS))
+    call_command('setup_regular_admin', '--apps', *AUTHORIZED_APPS)
     group = Group.objects.get(name=REGULAR_ADMIN_GROUP_NAME)
     assert group.user_set.count() == 0
 
@@ -144,14 +144,14 @@ def test_setup_regular_admin_idempotent():
     call_command(
         'setup_regular_admin',
         '--apps',
-        ','.join(AUTHORIZED_APPS),
+        *AUTHORIZED_APPS,
         '--assign-users',
         email,
     )
     call_command(
         'setup_regular_admin',
         '--apps',
-        ','.join(AUTHORIZED_APPS),
+        *AUTHORIZED_APPS,
         '--assign-users',
         email,
     )

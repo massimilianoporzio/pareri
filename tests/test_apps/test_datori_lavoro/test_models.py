@@ -10,16 +10,26 @@ from server.apps.datoriLavoro.models import (
     validate_codice_fiscale,
     validate_p_iva_italiana,
 )
-from server.apps.main.models import CityProxy
+from server.apps.main.models import CityProxy, CountryProxy, RegionProxy
 
 
 @pytest.fixture
 def city():
     """Fixture per creare una città di test."""
-    city = CityProxy.objects.first()
-    if not city:
-        pytest.skip('Nessuna città disponibile nel database')
-    return city
+    # Create country, region, and city for testing
+    country = CountryProxy.objects.create(
+        name='Italia', code2='IT', code3='ITA', slug='italia'
+    )
+    region = RegionProxy.objects.create(
+        name='Lazio', country=country, slug='lazio'
+    )
+    return CityProxy.objects.create(
+        name='Roma',
+        region=region,
+        country=country,
+        slug='roma',
+        display_name='Roma',
+    )
 
 
 @pytest.mark.django_db
