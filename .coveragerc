@@ -3,5 +3,15 @@ omit =
     server/staticfiles/*
     server/media/*
     server/apps/*/migrations/*
+    server/apps/datoriLavoro/*
+    manage.py
+    scripts/*
+
+[report]
+omit =
+    server/staticfiles/*
+    server/media/*
+    server/apps/*/migrations/*
+    server/apps/datoriLavoro/*
     manage.py
     scripts/*

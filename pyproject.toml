@@ -42,6 +42,8 @@ django-jazzmin = "^2.6.0"
 django-tailwind-4 = {extras = ["reload"], version = "^0.1.4"}
 whitenoise = "^6.11.0"
 django-cities-light = "^3.10.2"
+codicefiscale = "^0.9"
+verify-vat-number = "^2.0.0"
 
 
 [tool.poetry.group.dev.dependencies]

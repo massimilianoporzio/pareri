@@ -36,6 +36,8 @@ class CustomUserManager(BaseUserManager):
             raise ValueError(_("L'indirizzo email deve essere impostato"))
         # Aggiungi la validazione qui
         self.full_clean(email)
+        # Utenti creati tramite manager sono staff per default
+        extra_fields.setdefault('is_staff', True)
         email = self.normalize_email(email)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
