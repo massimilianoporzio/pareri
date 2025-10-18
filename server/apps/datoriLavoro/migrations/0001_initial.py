@@ -177,7 +177,7 @@ class Migration(migrations.Migration):
                     'citta',
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.PROTECT,
-                        to='cities_light.cityproxy',
+                        to='cities_light.City',
                         verbose_name='Città',
                     ),
                 ),
