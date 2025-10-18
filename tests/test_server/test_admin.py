@@ -4,12 +4,14 @@
 # pylint: disable=protected-access, unused-argument, invalid-name, redefined-outer-name, reimported, import-outside-toplevel
 
 import contextlib
+import importlib
 import sys
 from http import HTTPStatus
 
 import pytest
 from axes.models import AccessAttempt, AccessFailureLog, AccessLog
 from django.contrib import admin
+from django.contrib import admin as dj_admin
 from django.contrib.admin import AdminSite
 from django.contrib.admin.models import LogEntry
 from django.contrib.admin.sites import all_sites
@@ -19,9 +21,12 @@ from django.http import HttpRequest
 from django.test import Client, RequestFactory
 from django.urls import reverse
 
+import server.admin as admin_mod
+import server.settings.environments.development as dev_settings
 from server.admin import CustomAdminSite
 from server.apps.accounts.admin import CustomUserAdmin
 from server.apps.accounts.models import CustomUser
+from server.apps.main.models import DummyModel
 from server.settings.components.common import AUTHORIZED_APPS
 
 # Models that should have restricted (FORBIDDEN) admin add pages
@@ -313,8 +318,7 @@ def test_custom_admin_get_app_list_branch_else(monkeypatch, db):
 
 
 def test_admin_axes_importerror(monkeypatch):
-    import server.admin as admin_mod
-
+    """Coprire il branch except ImportError in admin.py."""
     """Testa che il ramo except ImportError venga coperto.
 
     se axes non è disponibile.
@@ -325,8 +329,7 @@ def test_admin_axes_importerror(monkeypatch):
 
 
 def test_admin_axes_already_registered(monkeypatch):
-    import server.admin as admin_mod
-
+    """Coprire il branch AlreadyRegistered in admin.py."""
     """Coprire il branch AlreadyRegistered.
 
     nel for di registrazione admin axes.
@@ -368,7 +371,6 @@ def test_internal_ips_oserror(monkeypatch):
 
     INTERNAL_IPS assignment.
     """
-    import server.settings.environments.development as dev_settings
 
     def raise_oserror(*args, **kwargs):
         raise OSError
@@ -387,14 +389,12 @@ def test_internal_ips_oserror(monkeypatch):
 
 
 def test_admin_axes_importerror_branch(monkeypatch):
-    import server.admin as admin_mod
-
+    """Covers the except ImportError branch in admin.py."""
     """
     Coprire il branch except ImportError in admin.py.
 
     Simulan l'import fallito di axes.models.
     """
-    import importlib
     import sys
 
     sys.modules['axes.models'] = None
@@ -405,8 +405,6 @@ def test_admin_axes_importerror_branch(monkeypatch):
 
 def test_dummy_model_str():
     """Covers the __str__ method of DummyModel."""
-    from server.apps.main.models import DummyModel
-
     obj = DummyModel(name='TestName')
     assert str(obj) == 'TestName'
 
@@ -572,7 +570,6 @@ def test_region_filter_queryset_invalid_value():
 @pytest.mark.django_db
 def test_cities_admin_get_querysets():
     """Covers get_queryset methods of CityProxyAdmin and RegionProxyAdmin."""
-    from django.contrib import admin as dj_admin
     from django.http import HttpRequest
 
     from server.admin import CityProxyAdmin, RegionProxyAdmin

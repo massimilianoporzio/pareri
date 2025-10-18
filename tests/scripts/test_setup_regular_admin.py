@@ -1,3 +1,16 @@
+import pytest
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+from django.core.management import call_command
+
+from server.settings.components.common import (
+    AUTHORIZED_APPS,
+    REGULAR_ADMIN_GROUP_NAME,
+)
+
+pytestmark = pytest.mark.django_db
+
+
 def test_setup_regular_admin_prints_assigned_users(capfd):
     """Test: stampa finale 'Assigned users:' quando utenti vengono assegnati."""
     user_model = get_user_model()
@@ -69,19 +82,6 @@ def test_setup_regular_admin_group_already_exists():
     assert user in group.user_set.all()
 
 
-import pytest
-from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
-from django.core.management import call_command
-
-from server.settings.components.common import (
-    AUTHORIZED_APPS,
-    REGULAR_ADMIN_GROUP_NAME,
-)
-
-pytestmark = pytest.mark.django_db
-
-
 def test_setup_regular_admin_creates_group_and_assigns_user():
     """Test: crea gruppo e assegna utente, verifica permessi CRUD."""
     user_model = get_user_model()
@@ -134,7 +134,10 @@ def test_setup_regular_admin_handles_no_apps():
 
 
 def test_setup_regular_admin_idempotent():
-    """Test: chiamate ripetute non creano duplicati e mantengono permessi/utenti."""
+    """Test idempotenza assegnazioni e permessi.
+
+    Chiamate ripetute non creano duplicati e mantengono permessi/utenti.
+    """
     user_model = get_user_model()
     email = 'idempotent@aslcn1.it'
     user = user_model.objects.create_user(email=email)
