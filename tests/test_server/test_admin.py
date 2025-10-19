@@ -504,11 +504,18 @@ def test_region_filter_queryset_with_value():
     request = HttpRequest()
     city_admin = CityProxyAdmin(CityProxy, admin.site)
 
-    # Test filter with region1
+    # Resolve region id from the saved city to avoid any mismatch across DBs
+    milano = CityProxy.objects.get(slug='milano-tr1')
+    region_value = str(milano.region_id)
+    # Test filter with resolved region id
     region_filter = RegionFilter(
-        request, {'region': str(region1.id)}, CityProxy, city_admin
+        request, {'region': region_value}, CityProxy, city_admin
     )
-    filtered_qs = region_filter.queryset(request, CityProxy.objects.all())
+    # Use admin queryset and scope to created country for consistency
+    base_qs = city_admin.get_queryset(request).filter(country=country)
+    # Sanity check: data is present as expected
+    assert base_qs.filter(region_id=milano.region_id).count() == 1
+    filtered_qs = region_filter.queryset(request, base_qs)
 
     assert filtered_qs.count() == 1
     assert filtered_qs.first().name == 'Milano'

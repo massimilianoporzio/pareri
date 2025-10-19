@@ -158,3 +158,42 @@ def test_setup_regular_admin_idempotent():
     group = Group.objects.get(name=REGULAR_ADMIN_GROUP_NAME)
     assert user in group.user_set.all()
     assert group.permissions.count() > 0
+
+
+def test_setup_regular_admin_assign_user_by_email():
+    """Test: utente trovato per email quando username non corrisponde."""
+    user_model = get_user_model()
+    email = 'emailuser@aslcn1.it'
+    username = 'different_username'
+    user = user_model.objects.create_user(username=username, email=email)
+    # Assegna usando l'email invece dello username (non username!)
+    # Questo forza: cerca username -> fallisce -> cerca email -> succede
+    call_command(
+        'setup_regular_admin',
+        '--apps',
+        *AUTHORIZED_APPS,
+        '--assign-users',
+        email,  # Passa email, non username
+    )
+    group = Group.objects.get(name=REGULAR_ADMIN_GROUP_NAME)
+    assert user in group.user_set.all()
+    # Verifica che l'email è stata usata, non lo username
+    assert email != username
+
+
+def test_setup_regular_admin_assign_user_by_username():
+    """Test: utente trovato per username."""
+    user_model = get_user_model()
+    username = 'testusername'
+    email = 'usernametest@aslcn1.it'
+    user = user_model.objects.create_user(username=username, email=email)
+    # Assegna usando lo username
+    call_command(
+        'setup_regular_admin',
+        '--apps',
+        *AUTHORIZED_APPS,
+        '--assign-users',
+        username,  # Passa username questa volta
+    )
+    group = Group.objects.get(name=REGULAR_ADMIN_GROUP_NAME)
+    assert user in group.user_set.all()

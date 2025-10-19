@@ -45,6 +45,8 @@ jobs:
           python-version: "3.12"
       - name: Install Poetry
         uses: abatilo/actions-poetry@65c61eae400c65c9510a584af85138c1ae19bbc0 # Consigliato: usa @<SHA> per sicurezza
+      - name: Add Poetry to PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
       - name: Install dependencies
         run: poetry install --no-interaction --no-root
       - name: Run lint
@@ -52,6 +54,7 @@ jobs:
       - name: Run tests
         run: poetry run pytest --timeout=10 --cov --cov-report=xml --cov-report=term
       - name: Upload coverage to Codecov
+        if: ${{ !env.ACT }}
         uses: codecov/codecov-action@b9fd7d16f6d7d1b5d2bec1a2887e65ceed900238 # Consigliato: usa @<SHA> per sicurezza
         with:
           files: coverage.xml

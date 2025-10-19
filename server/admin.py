@@ -98,7 +98,8 @@ class RegionFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         """Restituisce la lista delle regioni disponibili."""
         regions = RegionProxy.objects.all().order_by('name')
-        return [(region.id, region.name) for region in regions]
+        # Use string ids to align with filter value type and URL params
+        return [(str(region.id), region.name) for region in regions]
 
     def queryset(self, request, queryset):
         """Filtra il queryset in base alla regione selezionata."""

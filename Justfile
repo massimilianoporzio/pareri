@@ -145,4 +145,4 @@ prettier-md:
     @pnpm prettier --write $(find . -maxdepth 1 -type f -name "*.md") $(find ./docs -type f -name "*.md")
 
 act-test:
-     @act -j test --secret-file .secrets
+    @act -j test --secret-file .secrets --container-architecture linux/amd64 -P ubuntu-latest=ghcr.io/catthehacker/ubuntu:act-22.04

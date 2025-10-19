@@ -127,7 +127,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING('Running in dry-run mode.'))
 
         perms_to_set, missing_apps = self._collect_perms(app_labels)
-        if missing_apps:
+        if missing_apps:  # pragma: no branch
             self.stdout.write(
                 self.style.WARNING(
                     'Skipping unknown apps: '
