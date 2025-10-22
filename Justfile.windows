@@ -25,6 +25,7 @@ menu:
     @Write-Host "🧪 Testing" -ForegroundColor Cyan
     @Write-Host "  ▶ test  — Run tests (just test)" -ForegroundColor Gray
     @Write-Host "  ▶ coverage — Generates coverage report (poetry run pytest --cov)" -ForegroundColor Gray
+    @Write-Host "  ▶ act-test — Run GitHub Actions test workflow locally (just act-test)" -ForegroundColor Gray
     @Write-Host ""
     @Write-Host "🧹 Linting & Formatting" -ForegroundColor Magenta
     @Write-Host "  ▶ lint   — Run ruff linter (just lint)" -ForegroundColor Gray
@@ -119,3 +120,6 @@ collectstatic:
 
 generate-django-secret:
      @poetry run python -c "from django.utils.crypto import get_random_string; print(get_random_string(50))"
+
+act-test:
+    @act -j test --secret-file .secrets

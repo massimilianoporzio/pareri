@@ -17,12 +17,6 @@ from server.apps.main.models import (
     RegionProxy,
 )
 
-# Definisci la lista delle app autorizzate per gli altri superuser
-AUTHORIZED_APPS = [
-    'pareri',
-    # Aggiungi qui gli 'app_label' delle app che vuoi mostrare
-]
-
 
 class CustomAdminSite(admin.AdminSite):
     """Custom Admin Site with personalized headers and titles."""
@@ -47,7 +41,9 @@ class CustomAdminSite(admin.AdminSite):
 
         if user_has_full_access_group:
             return app_list
-        return [app for app in app_list if app['app_label'] in AUTHORIZED_APPS]
+        # Usa la lista di app autorizzate configurata nelle settings
+        authorized = getattr(settings, 'AUTHORIZED_APPS', [])
+        return [app for app in app_list if app['app_label'] in authorized]
 
 
 custom_admin_site = CustomAdminSite(name='custom_admin')
@@ -102,13 +98,19 @@ class RegionFilter(admin.SimpleListFilter):
     def lookups(self, request, model_admin):
         """Restituisce la lista delle regioni disponibili."""
         regions = RegionProxy.objects.all().order_by('name')
-        return [(region.id, region.name) for region in regions]
+        # Use string ids to align with filter value type and URL params
+        return [(str(region.id), region.name) for region in regions]
 
     def queryset(self, request, queryset):
         """Filtra il queryset in base alla regione selezionata."""
-        if self.value():
-            return queryset.filter(region_id=self.value())
-        return queryset
+        value = self.value()
+        if value is None:
+            return queryset
+        try:
+            region_id = int(value)
+        except (TypeError, ValueError):
+            return queryset
+        return queryset.filter(region_id=region_id)
 
 
 class CityProxyAdmin(admin.ModelAdmin):

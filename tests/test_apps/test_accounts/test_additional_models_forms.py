@@ -15,6 +15,12 @@ from server.apps.accounts.models import CustomUser
 pytestmark = pytest.mark.django_db
 
 
+def test_create_user_sets_is_staff_true_by_default():
+    """CustomUserManager.create_user sets is_staff=True by default."""
+    user = CustomUser.objects.create_user('staffdefault@aslcn1.it')
+    assert user.is_staff is True
+
+
 def test_create_user_normalizes_and_sets_password():
     """create_user normalizes email and hashes the password."""
     user = CustomUser.objects.create_user('UPPER@aslcn1.it')

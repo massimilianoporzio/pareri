@@ -1,3 +1,13 @@
+#btn-chiudi:hover {
+  background-color: #545b62 !important;
+  border-color: #545b62 !important;
+}
+/* Pulsante Chiudi: forza grigio chiaro come Storia */
+#btn-chiudi {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
 :root {
   --colore-principale: #e00f90;
   --colore-secondario: #b909a2; /* per il colore di hover */
@@ -177,6 +187,64 @@
   top: 50%;
   transform: translateY(-50%);
   color: #888;
+}
+/* Forza larghezza massima delle select nelle inline admin */
+
+.select2-container {
+  max-width: 275px !important;
+  width: 100% !important;
+}
+
+/* Forza la breadcrumb compatta */
+.breadcrumb {
+  margin-bottom: 0.25rem !important;
+  padding: 0.25rem 0.5rem !important;
+  background: none !important;
+  font-size: 0.95em !important;
+}
+
+/* Riduci spaziatura tra cards e tabelle */
+.card,
+.card-body,
+.table {
+  margin-bottom: 0.5rem !important;
+  padding: 0.5rem !important;
+}
+
+.btn-xs,
+.btn-group-xs > .btn {
+  padding: 1px 8px !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+  border-radius: 3px !important;
+  height: 24px !important;
+  min-width: 60px !important;
+  box-sizing: border-box !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Forza i bottoni a stare dentro le card */
+.card .btn-group.float-right {
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  justify-content: flex-end !important;
+  max-width: 100%;
+}
+
+.card .btn-group.float-right .btn {
+  max-width: 100px !important;
+  min-width: 60px !important;
+  font-size: 12px !important;
+  padding: 1px 8px !important;
+  height: 24px !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+.card .btn-group.float-right {
+  display: flex !important;
 }
 
 .btn-primary:not(:disabled):not(.disabled).active,

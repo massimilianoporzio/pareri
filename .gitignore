@@ -261,3 +261,5 @@ artifacts/
 
 # virtual environments:
 .venv/
+# per usare act
+.secrets
