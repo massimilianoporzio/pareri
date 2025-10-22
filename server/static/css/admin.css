@@ -1,3 +1,13 @@
+#btn-chiudi:hover {
+  background-color: #545b62 !important;
+  border-color: #545b62 !important;
+}
+/* Pulsante Chiudi: forza grigio chiaro come Storia */
+#btn-chiudi {
+  background-color: #6c757d !important;
+  border-color: #6c757d !important;
+  color: #fff !important;
+}
 :root {
   --colore-principale: #e00f90;
   --colore-secondario: #b909a2; /* per il colore di hover */
@@ -177,6 +187,28 @@
   top: 50%;
   transform: translateY(-50%);
   color: #888;
+}
+/* Forza larghezza massima delle select nelle inline admin */
+
+.select2-container {
+  max-width: 275px !important;
+  width: 100% !important;
+}
+
+/* Forza la breadcrumb compatta */
+.breadcrumb {
+  margin-bottom: 0.25rem !important;
+  padding: 0.25rem 0.5rem !important;
+  background: none !important;
+  font-size: 0.95em !important;
+}
+
+/* Riduci spaziatura tra cards e tabelle */
+.card,
+.card-body,
+.table {
+  margin-bottom: 0.5rem !important;
+  padding: 0.5rem !important;
 }
 
 .btn-xs,

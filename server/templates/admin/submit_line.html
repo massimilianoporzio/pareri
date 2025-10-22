@@ -6,7 +6,8 @@
     {% if show_delete_link and original %}
         {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
         <a href="{% add_preserved_filters delete_url %}" class="btn btn-block btn-danger deletelink">{% trans "Delete" %}</a>
-        <button type="button" class="btn btn-block btn-secondary" onclick="window.close ? window.close() : window.history.back()">Chiudi</button>
+    {% url opts|admin_urlname:'changelist' as changelist_url %}
+    <a href="{{ changelist_url }}" id="btn-chiudi" class="btn btn-block btn-secondary btn-sm mt-2">Chiudi</a>
     {% endif %}
     {% if show_save_as_new %}
         <button type="submit" class="btn btn-block btn-info" name="_saveasnew">{% trans 'Save as new' %}</button>
