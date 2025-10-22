@@ -77,7 +77,7 @@ dotenv-linter = "^0.7"
 polint = "^0.5"
 dennis = "^1.1"
 dump-env = "^1.5"
-ipython = "^9.5"
+ipython = "^9.6"
 pre-commit = "^4.3.0"
 
 [tool.poetry.group.docs]
