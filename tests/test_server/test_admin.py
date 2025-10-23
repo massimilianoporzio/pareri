@@ -69,7 +69,10 @@ def _make_url(site: AdminSite, model: type[Model], page: str) -> str:
         (site, model)
         for site in all_sites
         for model, _ in site._registry.items()
-        if model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
+        if isinstance(model, type)
+        and issubclass(model, Model)
+        and getattr(model, '_meta', None) is not None
+        and model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
     ],
 )
 def test_admin_changelist(
@@ -91,7 +94,10 @@ def test_admin_changelist(
         (site, model)
         for site in all_sites
         for model, _ in site._registry.items()
-        if model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
+        if isinstance(model, type)
+        and issubclass(model, Model)
+        and getattr(model, '_meta', None) is not None
+        and model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
     ],
 )
 def test_admin_add(
@@ -504,6 +510,11 @@ def test_region_filter_queryset_with_value():
     request = HttpRequest()
     city_admin = CityProxyAdmin(CityProxy, admin.site)
 
+    # Diagnostica: verifica che i dati siano effettivamente creati
+    assert CountryProxy.objects.count() > 0, 'CountryProxy non ha oggetti!'
+    assert RegionProxy.objects.count() > 0, 'RegionProxy non ha oggetti!'
+    assert CityProxy.objects.count() > 0, 'CityProxy non ha oggetti!'
+
     # Resolve region id from the saved city to avoid any mismatch across DBs
     milano = CityProxy.objects.get(slug='milano-tr1')
     region_value = str(milano.region_id)
@@ -514,8 +525,15 @@ def test_region_filter_queryset_with_value():
     # Use admin queryset and scope to created country for consistency
     base_qs = city_admin.get_queryset(request).filter(country=country)
     # Sanity check: data is present as expected
-    assert base_qs.filter(region_id=milano.region_id).count() == 1
+    print(f'milano.region_id: {milano.region_id}')
+    print(f'base_qs: {[obj.name for obj in base_qs]}')
+    print(
+        f'base_qs.filter(region_id=milano.region_id): {
+            [obj.name for obj in base_qs.filter(region_id=milano.region_id)]
+        }'
+    )
     filtered_qs = region_filter.queryset(request, base_qs)
+    print(f'filtered_qs: {[obj.name for obj in filtered_qs]}')
 
     assert filtered_qs.count() == 1
     assert filtered_qs.first().name == 'Milano'

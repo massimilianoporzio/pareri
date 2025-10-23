@@ -16,6 +16,9 @@ from server.settings.components.common import (
     INSTALLED_APPS,
     MIDDLEWARE,
 )
+from server.settings.components.common import (
+    DTM_IGNORED_MIGRATIONS as COMMON_DTM_IGNORED_MIGRATIONS,
+)
 from server.settings.components.csp import (
     CSP_CONNECT_SRC,
     CSP_IMG_SRC,
@@ -104,7 +107,13 @@ ZEAL_ALLOWLIST = [
 # https://github.com/wemake-services/django-test-migrations
 
 # Set of badly named migrations to ignore:
-DTM_IGNORED_MIGRATIONS = frozenset((('axes', '*'),))
+DTM_IGNORED_MIGRATIONS = (
+    *(
+        (m.split('.', 1)[0], m.split('.', 1)[1])
+        for m in COMMON_DTM_IGNORED_MIGRATIONS
+    ),
+    ('axes', '*'),
+)
 
 
 # django-migration-linter
