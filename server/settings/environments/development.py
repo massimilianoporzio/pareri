@@ -107,10 +107,13 @@ ZEAL_ALLOWLIST = [
 # https://github.com/wemake-services/django-test-migrations
 
 # Set of badly named migrations to ignore:
-DTM_IGNORED_MIGRATIONS = tuple(
-    (m.split('.', 1)[0], m.split('.', 1)[1])
-    for m in COMMON_DTM_IGNORED_MIGRATIONS
-) + (('axes', '*'),)
+DTM_IGNORED_MIGRATIONS = (
+    *(
+        (m.split('.', 1)[0], m.split('.', 1)[1])
+        for m in COMMON_DTM_IGNORED_MIGRATIONS
+    ),
+    ('axes', '*'),
+)
 
 
 # django-migration-linter
