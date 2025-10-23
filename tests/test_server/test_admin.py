@@ -69,7 +69,10 @@ def _make_url(site: AdminSite, model: type[Model], page: str) -> str:
         (site, model)
         for site in all_sites
         for model, _ in site._registry.items()
-        if model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
+        if isinstance(model, type)
+        and issubclass(model, Model)
+        and getattr(model, '_meta', None) is not None
+        and model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
     ],
 )
 def test_admin_changelist(
@@ -91,7 +94,10 @@ def test_admin_changelist(
         (site, model)
         for site in all_sites
         for model, _ in site._registry.items()
-        if model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
+        if isinstance(model, type)
+        and issubclass(model, Model)
+        and getattr(model, '_meta', None) is not None
+        and model._meta.model_name not in _CITIES_LIGHT_UNREGISTERED_MODELS
     ],
 )
 def test_admin_add(
