@@ -1,4 +1,7 @@
-"""Settings specific for running tests: disables debug_toolbar and query_counter."""
+"""Settings specific for running tests.
+
+Disables debug_toolbar and query_counter.
+"""
 
 # Import only the base settings, not development overrides
 from server.settings.components.common import *  # noqa

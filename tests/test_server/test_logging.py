@@ -26,9 +26,12 @@ def _redact_caplog_handlers(
 ) -> None:
     """Pytest inserts custom formatter, we need to reset it back."""
     # Force the structlog formatter on the caplog handler
-    import structlog
-    from structlog.processors import KeyValueRenderer, TimeStamper
-    from structlog.stdlib import ProcessorFormatter
+    import structlog  # noqa: PLC0415
+    from structlog.processors import (  # noqa: PLC0415
+        KeyValueRenderer,
+        TimeStamper,
+    )
+    from structlog.stdlib import ProcessorFormatter  # noqa: PLC0415
 
     formatter = ProcessorFormatter(
         processor=KeyValueRenderer(

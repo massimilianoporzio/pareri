@@ -2,7 +2,8 @@
 
 
 def test_custom_show_toolbar_covers_all_branches(monkeypatch):
-    from server.settings.environments import development
+    """Tests _custom_show_toolbar function for both branches."""
+    from server.settings.environments import development  # noqa: PLC0415
 
     class DummyUser:
         def __init__(self, is_superuser):
@@ -13,5 +14,5 @@ def test_custom_show_toolbar_covers_all_branches(monkeypatch):
             self.user = DummyUser(is_superuser)
 
     # Covers both True and False branches
-    assert development._custom_show_toolbar(DummyRequest(True)) is True
-    assert development._custom_show_toolbar(DummyRequest(False)) is False
+    assert development._custom_show_toolbar(DummyRequest(True)) is True  # noqa: FBT003, SLF001
+    assert development._custom_show_toolbar(DummyRequest(False)) is False  # noqa: FBT003, SLF001
