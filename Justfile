@@ -102,7 +102,7 @@ collectstatic:
 # ----------------------
 
 test:
-    @poetry run pytest --maxfail=1 -q
+    @poetry run env DJANGO_SETTINGS_MODULE=server.settings.environments.test pytest --maxfail=1 -q
 
 coverage:
     @poetry run pytest --cov --cov-report=html --cov-report=term

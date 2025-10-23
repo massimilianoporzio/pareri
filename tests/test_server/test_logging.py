@@ -25,7 +25,22 @@ def _redact_caplog_handlers(
     logger: logging.Logger,
 ) -> None:
     """Pytest inserts custom formatter, we need to reset it back."""
-    caplog.handler.setFormatter(logger.handlers[0].formatter)
+    # Force the structlog formatter on the caplog handler
+    import structlog
+    from structlog.processors import KeyValueRenderer, TimeStamper
+    from structlog.stdlib import ProcessorFormatter
+
+    formatter = ProcessorFormatter(
+        processor=KeyValueRenderer(
+            key_order=['timestamp', 'level', 'event', 'logger']
+        ),
+        foreign_pre_chain=[
+            structlog.stdlib.add_log_level,
+            structlog.stdlib.add_logger_name,
+            TimeStamper(fmt='iso'),
+        ],
+    )
+    caplog.handler.setFormatter(formatter)
 
 
 def test_logging_format(

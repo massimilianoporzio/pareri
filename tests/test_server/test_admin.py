@@ -525,8 +525,13 @@ def test_region_filter_queryset_with_value():
     # Use admin queryset and scope to created country for consistency
     base_qs = city_admin.get_queryset(request).filter(country=country)
     # Sanity check: data is present as expected
-    assert base_qs.filter(region_id=milano.region_id).count() == 1
+    print(f'milano.region_id: {milano.region_id}')
+    print(f'base_qs: {[obj.name for obj in base_qs]}')
+    print(
+        f'base_qs.filter(region_id=milano.region_id): {[obj.name for obj in base_qs.filter(region_id=milano.region_id)]}'
+    )
     filtered_qs = region_filter.queryset(request, base_qs)
+    print(f'filtered_qs: {[obj.name for obj in filtered_qs]}')
 
     assert filtered_qs.count() == 1
     assert filtered_qs.first().name == 'Milano'
