@@ -368,7 +368,7 @@ CITIES_LIGHT_ENABLE_GEOCODING = True
 # Ignore auto-named migrations from third party apps
 # (for django-test-migrations)
 DTM_IGNORED_MIGRATIONS = [
-    ('cities_light', '0003_auto_20141120_0342'),
-    ('cities_light', '0010_auto_20200508_1851'),
-    ('cities_light', '0013_cityproxy_countryproxy_regionproxy'),
+    'cities_light.0003_auto_20141120_0342',
+    'cities_light.0010_auto_20200508_1851',
+    'cities_light.0013_cityproxy_countryproxy_regionproxy',
 ]
