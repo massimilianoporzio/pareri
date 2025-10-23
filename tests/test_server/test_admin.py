@@ -504,6 +504,11 @@ def test_region_filter_queryset_with_value():
     request = HttpRequest()
     city_admin = CityProxyAdmin(CityProxy, admin.site)
 
+    # Diagnostica: verifica che i dati siano effettivamente creati
+    assert CountryProxy.objects.count() > 0, 'CountryProxy non ha oggetti!'
+    assert RegionProxy.objects.count() > 0, 'RegionProxy non ha oggetti!'
+    assert CityProxy.objects.count() > 0, 'CityProxy non ha oggetti!'
+
     # Resolve region id from the saved city to avoid any mismatch across DBs
     milano = CityProxy.objects.get(slug='milano-tr1')
     region_value = str(milano.region_id)

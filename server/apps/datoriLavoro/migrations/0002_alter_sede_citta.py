@@ -5,9 +5,8 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('cities_light', '0013_cityproxy_countryproxy_regionproxy'),
+        ('cities_light', '0010_auto_20200508_1851'),
         ('datoriLavoro', '0001_initial'),
     ]
 
@@ -15,6 +14,10 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='sede',
             name='citta',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='cities_light.cityproxy', verbose_name='Città'),
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.PROTECT,
+                to='cities_light.cityproxy',
+                verbose_name='Città',
+            ),
         ),
     ]
