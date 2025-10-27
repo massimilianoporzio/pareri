@@ -55,7 +55,7 @@ django-zeal = "^2.0"
 django-drifter = "^0.1"
 
 wemake-python-styleguide = "^1.4"
-ruff = "^0.13"
+ruff = "^0.14"
 doc8 = "^2.0"
 
 pytest = "^8.3"
